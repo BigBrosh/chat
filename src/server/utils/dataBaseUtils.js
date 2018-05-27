@@ -14,19 +14,17 @@ export function listUsers() {
 	return User.find();
 }
 
+export function findUser(name) {
+	return User.find({ name: name});
+}
+
 export function createUser(data) {
 	let user = new User({
 		name: data.name,
 		password: data.password
 	});
 
-
-	User.find({ name: user.name}, function (err, docs) {
-		if (!(docs.length > 0))
-			return user.save();
-
-		else return User.remove(user);
-	});
+	user.save();
 }
 
 export function deleteUser(id) {

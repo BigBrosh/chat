@@ -13,6 +13,7 @@ button
 	border: 1px solid $main_color
 	border-radius: 4px
 	background: none
+	outline: none
 	color: $main_color
 	transition: .25s
 	&:hover
@@ -21,6 +22,12 @@ button
 		background: $main_color
 
 input
+	outline: none
 	border-radius: 4px
 	padding: 6px
-	border: 1px solid $additional_color
+	border: 1px solid rgba($additional_color, .6)
+	&:focus
+		border-color: rgba($additional_color, 1)
+
+p
+	font-size: 14px

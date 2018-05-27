@@ -3066,7 +3066,7 @@ var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
 
 var _RegisterPage = __webpack_require__(75);
 
-var _ErrorPage = __webpack_require__(81);
+var _ErrorPage = __webpack_require__(82);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25099,6 +25099,8 @@ __webpack_require__(76);
 
 __webpack_require__(79);
 
+var _config = __webpack_require__(81);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25121,12 +25123,76 @@ var RegisterPage = exports.RegisterPage = function (_React$Component) {
 			args[_key] = arguments[_key];
 		}
 
-		return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RegisterPage.__proto__ || Object.getPrototypeOf(RegisterPage)).call.apply(_ref, [this].concat(args))), _this), _this.render = function () {
+		return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RegisterPage.__proto__ || Object.getPrototypeOf(RegisterPage)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+			successMessage: 'You\'ve been registered. Congratulations!',
+			successChecker: false,
+			errorMessage: 'Something went wrong',
+			errorChecker: false
+		}, _this.addUser = function () {
+			var nickname = document.getElementById('nickname').value;
+			var password = document.getElementById('password').value;
+
+			// if nickname is empty
+			if (nickname.length === 0 || nickname.replace(/\s/ig, '').length === 0) {
+				_this.setState({
+					errorChecker: true,
+					errorMessage: 'You should enter some nickname'
+				});
+			}
+
+			// if nickname is empty
+			else if (password.length === 0 || password.replace(/\s/ig, '').length === 0) {
+					_this.setState({
+						errorChecker: true,
+						errorMessage: 'You should enter some password'
+					});
+				}
+
+				// if input data is fine
+				else {
+						fetch(_config.apiPrefix + '/' + _config.db.name, {
+							method: 'POST',
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({
+								name: nickname,
+								password: password
+							})
+						}).then(function (response) {
+							if (response.status === 404) {
+								_this.setState({
+									errorChecker: true,
+									errorMessage: 'User already exist. Try another login'
+								});
+							} else {
+								_this.setState({
+									successChecker: true,
+									errorChecker: false
+								});
+							}
+						});
+					}
+		}, _this.render = function () {
+			var message = void 0;
+
+			if (_this.state.successChecker === true) {
+				message = _react2.default.createElement(
+					'p',
+					{ className: 'message success_message' },
+					_this.state.successMessage
+				);
+			} else if (_this.state.errorChecker === true) {
+				message = _react2.default.createElement(
+					'p',
+					{ className: 'message error_message' },
+					_this.state.errorMessage
+				);
+			}
+
 			return _react2.default.createElement(
 				'div',
 				null,
 				_react2.default.createElement(
-					'p',
+					'h2',
 					{ className: 'title' },
 					'Registration'
 				),
@@ -25139,14 +25205,15 @@ var RegisterPage = exports.RegisterPage = function (_React$Component) {
 						_react2.default.createElement(
 							'div',
 							{ className: 'data' },
-							_react2.default.createElement('input', { type: 'text', placeholder: 'Nickname' }),
-							_react2.default.createElement('input', { type: 'password', placeholder: 'Password' })
+							_react2.default.createElement('input', { id: 'nickname', type: 'text', placeholder: 'Nickname' }),
+							_react2.default.createElement('input', { id: 'password', type: 'password', placeholder: 'Password' })
 						),
 						_react2.default.createElement(
 							'button',
-							null,
+							{ onClick: _this.addUser },
 							'Register'
-						)
+						),
+						message
 					)
 				)
 			);
@@ -25215,7 +25282,7 @@ exports = module.exports = __webpack_require__(34)(false);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif; }\n\n.title {\n  text-align: center; }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid #62cfa5; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif; }\n\n.title {\n  text-align: center; }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\np {\n  font-size: 14px; }\n", ""]);
 
 // exports
 
@@ -25374,13 +25441,19 @@ exports = module.exports = __webpack_require__(34)(false);
 
 
 // module
-exports.push([module.i, ".register_form {\n  display: flex;\n  justify-content: center; }\n  .register_form .inner {\n    padding: 16px;\n    max-width: 600px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    border-radius: 10px;\n    border: 1px solid #62cfa5; }\n  .register_form .data {\n    width: 100%;\n    display: flex;\n    justify-content: space-between;\n    margin-bottom: 15px; }\n    .register_form .data > * {\n      width: calc(50% - 8px); }\n", ""]);
+exports.push([module.i, ".register_form {\n  display: flex;\n  justify-content: center; }\n  .register_form .inner {\n    padding: 16px;\n    max-width: 600px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    border-radius: 10px;\n    border: 1px solid #62cfa5; }\n  .register_form .data {\n    width: 100%;\n    display: flex;\n    justify-content: space-between;\n    margin-bottom: 15px; }\n    .register_form .data > * {\n      width: calc(50% - 8px); }\n\n.message {\n  margin-bottom: 0px; }\n  .message.success_message {\n    color: green; }\n  .message.error_message {\n    color: red; }\n", ""]);
 
 // exports
 
 
 /***/ }),
 /* 81 */
+/***/ (function(module, exports) {
+
+module.exports = {"apiPrefix":"http://localhost:8080","serverPort":"8080","db":{"name":"users","host":"localhost","port":27017}}
+
+/***/ }),
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

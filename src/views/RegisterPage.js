@@ -6,25 +6,80 @@ import '../styles/register_page/register.sass';
 import { apiPrefix, db } from '../configs/config.json';
 
 export class RegisterPage extends React.Component {
+	state = {
+		successMessage: 'You\'ve been registered. Congratulations!',
+		successChecker: false,
+		errorMessage: 'Something went wrong',
+		errorChecker: false
+	}
+
 	addUser = () => {
 		let nickname = document.getElementById('nickname').value;
 		let password = document.getElementById('password').value;
 
-		fetch( `${apiPrefix}/${db.name}`, {
-			method: 'POST',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				name: nickname,
-				password: password
+		// if nickname is empty
+		if (nickname.length === 0 || nickname.replace(/\s/ig, '').length === 0)
+		{
+			this.setState({
+				errorChecker: true,
+				errorMessage: 'You should enter some nickname'
+			});
+		}
+
+		// if nickname is empty
+		else if (password.length === 0 || password.replace(/\s/ig, '').length === 0)
+		{
+			this.setState({
+				errorChecker: true,
+				errorMessage: 'You should enter some password'
+			});
+		}
+
+		// if input data is fine
+		else
+		{
+			fetch( `${apiPrefix}/${db.name}`, {
+				method: 'POST',
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					name: nickname,
+					password: password
+				})
 			})
-		})
-		.then(console.log('done'))
-		.catch(error => {
-			throw error
-		});
+			.then(response => {
+				if (response.status === 404)
+				{
+					this.setState({
+						errorChecker: true,
+						errorMessage: 'User already exist. Try another login'
+					});
+				}
+
+				else
+				{
+					this.setState({
+						successChecker: true,
+						errorChecker: false
+					});
+				}
+			});
+		}
+
 	}
 
 	render = () => {
+		let message;
+
+		if (this.state.successChecker === true)
+		{
+			message = <p className="message success_message">{this.state.successMessage}</p>
+		}
+
+		else if (this.state.errorChecker === true)
+		{
+			message = <p className="message error_message">{this.state.errorMessage}</p>
+		}
+
 		return (
 			<div>
 				<h2 className="title">Registration</h2>
@@ -37,6 +92,8 @@ export class RegisterPage extends React.Component {
 						</div>
 
 						<button onClick={this.addUser} >Register</button>
+
+						{message}
 					</div>
 				</div>
 			</div>
