@@ -10,12 +10,12 @@ import {ErrorPage} from './views/ErrorPage';
 const history = createBrowserHistory();
 
 class Main extends React.Component {
-	componentWillReceiveProps = nextProps =>{
+	componentWillReceiveProps(nextProps) {
 		if (nextProps)
 			return this.props.history !== nextProps.history;
-	};
+	}
 
-	render = () => {
+	render() {
 		return(
 			<Router history={this.props.history}>
 				<Switch>

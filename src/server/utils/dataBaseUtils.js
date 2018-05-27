@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-import '../databaseComponents/userModel';
 
-const User = mongoose.model('User');
+import '../databaseComponents/userModel';
+import config from '../../configs/config.json';
+
+const User = mongoose.model('users');
 
 export function setUpConnection() {
-	mongoose.connect(`mongodb://localhost/notes`);
+	mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`);
 }
 
 export function listUsers() {
@@ -13,7 +15,6 @@ export function listUsers() {
 
 export function createUser(data) {
 	const user = new User({
-		id: User.count() + 1,
 		name: data.name
 	});
 
@@ -21,5 +22,9 @@ export function createUser(data) {
 }
 
 export function deleteUser(id) {
-	return Note.findById(id).remove();
+	return User.findById(id).remove();
+}
+
+export function clearDB() {
+	User.collection.remove();
 }
