@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import {Router, Route, Switch, Redirect} from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import {MainPage} from './views/MainPage';
+import {RegisterPage} from './views/RegisterPage';
 import {ErrorPage} from './views/ErrorPage';
 
 const history = createBrowserHistory();
@@ -19,7 +19,7 @@ class Main extends React.Component {
 		return(
 			<Router history={this.props.history}>
 				<Switch>
-					<Route exact path="/" component={MainPage} />
+					<Route exact path="/" component={RegisterPage} />
 					<Route path="/404" component={ErrorPage} />
 					<Redirect to='/404' />
 				</Switch>

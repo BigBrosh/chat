@@ -26,9 +26,16 @@ module.exports = {
 					},
 				],
 			}, {
-                test: /\.json$/,
-                loader: "json-loader"
-            }
+				test: /\.sass$/,
+				use: [
+					"style-loader",
+					"css-loader",
+					"sass-loader"
+				],
+			}, {
+				test: /\.json$/,
+				loader: "json-loader"
+			}
 		]
 	}
 };
