@@ -20,15 +20,9 @@ export function createUser(data) {
 		password: data.password
 	});
 
-	let condition = true;
 
-	listUsers().then(data => {
-		data.forEach(el => {
-			if (el.name === user.name)
-				condition = false;
-		});
-
-		if (condition)
+	User.find({ name: user.name}, function (err, docs) {
+		if (!(docs.length > 0))
 			return user.save();
 
 		else return User.remove(user);
