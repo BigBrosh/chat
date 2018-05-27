@@ -10,17 +10,25 @@ const app = express();
 
 db.setUpConnection();
 
-app.use(bodyParser.json());
-
-// db.createUser({name: 'BigBrosh'});
-
-app.get('/users', (req, res) => {
-	db.listUsers().then(data => res.send(data));
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
 });
 
-// app.post('/users', (req, res) => {
-// 	db.createUser(req.body).then(data => res.send(data));
-// });
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors({ origin: '*' }));
+
+
+app.get('/users', (req, res) => {
+	db.listUsers()
+	.then(data => res.send(data));
+});
+
+app.post('/users', (req, res) => {
+	db.createUser(req.body);
+});
 
 // app.delete('/users/:id', (req, res) => {
 // 	db.deleteUser(req.params.id).then(data => res.send(data));

@@ -6,6 +6,7 @@ import config from '../../configs/config.json';
 const User = mongoose.model('users');
 
 export function setUpConnection() {
+	mongoose.Promise = global.Promise;
 	mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`);
 }
 
@@ -14,11 +15,24 @@ export function listUsers() {
 }
 
 export function createUser(data) {
-	const user = new User({
-		name: data.name
+	let user = new User({
+		name: data.name,
+		password: data.password
 	});
 
-	return user.save();
+	let condition = true;
+
+	listUsers().then(data => {
+		data.forEach(el => {
+			if (el.name === user.name)
+				condition = false;
+		});
+
+		if (condition)
+			return user.save();
+
+		else return User.remove(user);
+	});
 }
 
 export function deleteUser(id) {
