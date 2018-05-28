@@ -27,16 +27,19 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-	return db.findUser(req.body.name).then(found => {
-		if (found.length === 0)
-		{
-			db.createUser(req.body);
-			res.sendStatus(200);				
-		}
+	if (req.body.action === 'register')
+	{
+		return db.findUser(req.body.data.name).then(found => {
+			if (found.length === 0)
+			{
+				db.createUser(req.body.data);
+				res.sendStatus(200);				
+			}
 
-		else
-			res.sendStatus(404);
-	});
+			else
+				res.sendStatus(404);
+		});		
+	}
 });
 
 // app.delete('/users/:id', (req, res) => {

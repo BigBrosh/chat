@@ -5,12 +5,35 @@ import '../styles/register_page/register.sass';
 
 import { apiPrefix, db } from '../configs/config.json';
 
-export class RegisterPage extends React.Component {
+import { logIn } from '../reducer/actions';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import createBrowserHistory from 'history/createBrowserHistory';
+
+const history = createBrowserHistory();
+
+class RegisterPage extends React.Component {
 	state = {
 		successMessage: 'You\'ve been registered. Congratulations!',
 		successChecker: false,
 		errorMessage: 'Something went wrong',
 		errorChecker: false
+	}
+
+	componentWillMount = () => {
+		this.loginChecker();
+	}
+
+	componentWillUpdate = () => {
+		this.loginChecker();
+	}
+
+	loginChecker = () => {
+		if (this.props.logged === true)
+		{
+			history.replace('/');
+			history.go();
+		}	
 	}
 
 	addUser = () => {
@@ -42,8 +65,12 @@ export class RegisterPage extends React.Component {
 				method: 'POST',
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					name: nickname,
-					password: password
+					action: 'register',
+					data: {
+						name: nickname,
+						password: password
+						
+					}
 				})
 			})
 			.then(response => {
@@ -57,10 +84,12 @@ export class RegisterPage extends React.Component {
 
 				else
 				{
-					this.setState({
-						successChecker: true,
-						errorChecker: false
-					});
+					this.props.logIn();
+					// this.setState({
+					// 	successChecker: true,
+					// 	errorChecker: false
+					// });
+
 				}
 			});
 		}
@@ -68,6 +97,7 @@ export class RegisterPage extends React.Component {
 	}
 
 	render = () => {
+		console.log(this.props.logged);
 		let message;
 
 		if (this.state.successChecker === true)
@@ -100,3 +130,17 @@ export class RegisterPage extends React.Component {
 		)
 	}
 }
+
+function mapStateToProps (state) {
+	return {
+		logged: state.loggedIn
+	}
+}
+
+function mapDispatchToProps (dispatch) {
+	return {
+		logIn: bindActionCreators(logIn, dispatch),
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);
