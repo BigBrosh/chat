@@ -1,6 +1,9 @@
 const RequestController = {
-	sendToLocal: (place, request) => {		
-		localStorage.setItem(place, JSON.stringify(request));
+	sendToLocal: (request) => {
+		for (let key in request)
+		{
+			localStorage.setItem(key, JSON.stringify(request[key]));
+		}
 	},
 
 	getFromLocal: place => {

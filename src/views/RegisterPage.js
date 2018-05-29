@@ -85,7 +85,7 @@ class RegisterPage extends React.Component {
 
 				else
 				{
-					RequestController.sendToLocal('logged', true);
+					RequestController.sendToLocal({logged: true, login: nickname});
 
 					this.setState({
 						successChecker: true,
