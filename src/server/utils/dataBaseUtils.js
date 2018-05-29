@@ -15,7 +15,7 @@ export function listUsers() {
 }
 
 export function findUser(name) {
-	return User.find({ name: name});
+	return User.find({ name: name });
 }
 
 export function createUser(data) {

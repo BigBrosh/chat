@@ -11,7 +11,7 @@ class mainPage extends React.Component {
 		if (logged === false ||
 			!logged)
 		{
-			history.replace('/registration');
+			history.replace('/login');
 			history.go();
 		}
 	}

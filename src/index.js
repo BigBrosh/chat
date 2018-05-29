@@ -7,6 +7,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import MainPage from './views/MainPage';
 import RegisterPage from './views/RegisterPage';
 import {ErrorPage} from './views/ErrorPage';
+import LoginPage from './views/LoginPage';
 
 
 const history = createBrowserHistory();
@@ -23,6 +24,7 @@ class Main extends React.Component {
 				<Switch>
 					<Route exact path="/" component={MainPage} />
 					<Route exact path="/registration" component={RegisterPage} />
+					<Route exact path="/login" component={LoginPage} />
 					<Route path="/404" component={ErrorPage} />
 				</Switch>
 			</Router>

@@ -14,10 +14,12 @@
 	.data
 		width: 100%
 		display: flex
-		justify-content: space-between
+		flex-direction: column
 		margin-bottom: 15px
 		& > *
-			width: calc(50% - 8px)
+			width: 100%
+			&:not(:last-child)
+				margin-bottom: 10px
 .message
 	margin-bottom: 0px
 	&.success_message

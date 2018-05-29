@@ -29,8 +29,8 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {
 	if (req.body.action === 'register')
 	{
-		return db.findUser(req.body.data.name).then(found => {
-			if (found.length === 0)
+		return db.findUser(req.body.data.name).then(response => {
+			if (response.length === 0)
 			{
 				db.createUser(req.body.data);
 				res.sendStatus(200);				
@@ -39,6 +39,24 @@ app.post('/users', (req, res) => {
 			else
 				res.sendStatus(404);
 		});		
+	}
+
+	else if (req.body.action === 'login')
+	{
+		db.findUser(req.body.data.name).then(response => {
+			if (response.length !== 0)
+			{
+				if (response[0].password !== req.body.data.password)
+					res.sendStatus(403);
+
+				else
+					res.sendStatus(200);
+			}
+
+			else
+				res.sendStatus(404);
+		});
+
 	}
 });
 
