@@ -29,7 +29,8 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {
 	if (req.body.action === 'register')
 	{
-		return db.findUser(req.body.data.name).then(response => {
+		return db.findUser(req.body.data.name)
+		.then(response => {
 			if (response.length === 0)
 			{
 				db.createUser(req.body.data);
@@ -43,7 +44,8 @@ app.post('/users', (req, res) => {
 
 	else if (req.body.action === 'login')
 	{
-		db.findUser(req.body.data.name).then(response => {
+		db.findUser(req.body.data.name)
+		.then(response => {
 			if (response.length !== 0)
 			{
 				if (response[0].password !== req.body.data.password)

@@ -1,9 +1,10 @@
 import React from 'react';
 
+import { Link } from 'react-router-dom';
+
 import RequestController from '../controllers/RequestController';
 
 import { apiPrefix, db } from '../configs/config.json';
-
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const history = createBrowserHistory();
@@ -128,6 +129,8 @@ class LoginPage extends React.Component {
 						<button onClick={this.login} >Login</button>
 
 						{message}
+
+						<Link to="/registration">Don't have an account?</Link>
 					</div>
 				</div>
 			</div>

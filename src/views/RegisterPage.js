@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Link } from 'react-router-dom';
+
 import '../styles/main.sass';
 import '../styles/register_page/register.sass';
 
@@ -83,12 +85,12 @@ class RegisterPage extends React.Component {
 
 				else
 				{
+					RequestController.sendToLocal('logged', true);
+
 					this.setState({
 						successChecker: true,
 						errorChecker: false
 					});
-
-					RequestController.sendToLocal('logged', true);
 				}
 			});
 		}
@@ -122,6 +124,8 @@ class RegisterPage extends React.Component {
 						<button onClick={this.addUser} >Register</button>
 
 						{message}
+
+						<Link to="/login">Do you have an account?</Link>
 					</div>
 				</div>
 			</div>
