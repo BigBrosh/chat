@@ -3,11 +3,10 @@ import React from 'react';
 import '../styles/main.sass';
 import '../styles/register_page/register.sass';
 
+import RequestController from '../controllers/RequestController';
+
 import { apiPrefix, db } from '../configs/config.json';
 
-import { logIn } from '../reducer/actions';
-import {bindActionCreators} from 'redux';
-import { connect } from 'react-redux';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const history = createBrowserHistory();
@@ -29,7 +28,7 @@ class RegisterPage extends React.Component {
 	}
 
 	loginChecker = () => {
-		if (this.props.logged === true)
+		if (RequestController.getFromLocal('logged') === true)
 		{
 			history.replace('/');
 			history.go();
@@ -84,12 +83,12 @@ class RegisterPage extends React.Component {
 
 				else
 				{
-					this.props.logIn();
-					// this.setState({
-					// 	successChecker: true,
-					// 	errorChecker: false
-					// });
+					this.setState({
+						successChecker: true,
+						errorChecker: false
+					});
 
+					RequestController.sendToLocal('logged', true);
 				}
 			});
 		}
@@ -97,7 +96,6 @@ class RegisterPage extends React.Component {
 	}
 
 	render = () => {
-		console.log(this.props.logged);
 		let message;
 
 		if (this.state.successChecker === true)
@@ -131,16 +129,4 @@ class RegisterPage extends React.Component {
 	}
 }
 
-function mapStateToProps (state) {
-	return {
-		logged: state.loggedIn
-	}
-}
-
-function mapDispatchToProps (dispatch) {
-	return {
-		logIn: bindActionCreators(logIn, dispatch),
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);
+export default RegisterPage;
