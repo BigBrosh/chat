@@ -1,0 +1,37 @@
+@import '../main.sass'
+
+$aside_width: 300px
+
+.main_chat_wrap
+	height: 100vh
+	box-sizing: border-box
+	display: flex
+	font-family: sans-serif
+	border: 1px solid $main_color
+	& > *
+		padding: 10px
+	
+.aside, .chat_wrap
+	overflow-y: auto
+
+.aside
+	width: $aside_width
+	height: 100%
+	border-right: 1px solid $additional_color
+	& > *
+		padding: 10px
+
+	.chat_wrap
+		width: calc(100% - $aside_width)
+
+	.chat
+		border: 1px solid $main_color
+		margin-bottom: 10px
+		cursor: pointer
+		.chat_title
+			border-bottom: 1px solid $additional_color
+		& > *
+			padding: 5px
+			text-overflow: ellipsis
+			white-space: nowrap
+			overflow: hidden
