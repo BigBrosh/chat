@@ -21,91 +21,95 @@ class mainPage extends React.Component {
 
 	render = () => {		
 		return (
-			<div class="main_chat_wrap">
-				<div class="aside">
-					<div class="top_line">
+			<div className="main_chat_wrap">
+				<div className="aside">
+					<div className="top_line">
 						<button>Create chat</button>
 					</div>
 
-					<ul class="available_chats">
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+					<ul className="available_chats">
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Very big last message from somebody</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Very big last message from somebody</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 
-						<li class="chat">
-							<p class="chat_title">Nickname</p>
-							<p class="chat_preview">Last message</p>
+						<li className="chat">
+							<p className="chat_title">Nickname</p>
+							<p className="chat_preview">Last message</p>
 						</li>
 					</ul>
 				</div>
 
-				<div class="chat_wrap"></div>
+				<div className="chat_wrap">
+					<div className="top_line">
+						<p className="chat_active_title">Nickname or group</p>
+					</div>
+				</div>
 			</div>
 		);
 	}

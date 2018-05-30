@@ -25048,13 +25048,13 @@ var mainPage = function (_React$Component) {
 		}, _this.render = function () {
 			return _react2.default.createElement(
 				'div',
-				{ 'class': 'main_chat_wrap' },
+				{ className: 'main_chat_wrap' },
 				_react2.default.createElement(
 					'div',
-					{ 'class': 'aside' },
+					{ className: 'aside' },
 					_react2.default.createElement(
 						'div',
-						{ 'class': 'top_line' },
+						{ className: 'top_line' },
 						_react2.default.createElement(
 							'button',
 							null,
@@ -25063,220 +25063,232 @@ var mainPage = function (_React$Component) {
 					),
 					_react2.default.createElement(
 						'ul',
-						{ 'class': 'available_chats' },
+						{ className: 'available_chats' },
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Very big last message from somebody'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						),
 						_react2.default.createElement(
 							'li',
-							{ 'class': 'chat' },
+							{ className: 'chat' },
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_title' },
+								{ className: 'chat_title' },
 								'Nickname'
 							),
 							_react2.default.createElement(
 								'p',
-								{ 'class': 'chat_preview' },
+								{ className: 'chat_preview' },
 								'Last message'
 							)
 						)
 					)
 				),
-				_react2.default.createElement('div', { 'class': 'chat_wrap' })
+				_react2.default.createElement(
+					'div',
+					{ className: 'chat_wrap' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'top_line' },
+						_react2.default.createElement(
+							'p',
+							{ className: 'chat_active_title' },
+							'Nickname or group'
+						)
+					)
+				)
 			);
 		}, _temp), _possibleConstructorReturn(_this, _ret);
 	}
@@ -25345,7 +25357,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px; }\n\nbody {\n  margin: 0px; }\n\n.title {\n  text-align: center; }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\np, a {\n  font-size: 14px; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n.main_chat_wrap {\n  height: 100vh;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.aside, .chat_wrap {\n  overflow-y: auto; }\n\n.aside {\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5; }\n  .aside > * {\n    padding: 10px; }\n  .aside .chat_wrap {\n    width: calc(100% - $aside_width); }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5; }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px; }\n\nbody {\n  margin: 0px; }\n\n.title {\n  text-align: center; }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\np, a {\n  font-size: 14px; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n.main_chat_wrap {\n  height: 100vh;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.aside, .chat_wrap {\n  overflow-y: auto; }\n\n.chat_wrap {\n  flex-grow: 1; }\n\n.aside {\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5; }\n  .aside > * {\n    padding: 10px; }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5; }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n", ""]);
 
 // exports
 

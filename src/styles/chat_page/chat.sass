@@ -14,6 +14,9 @@ $aside_width: 300px
 .aside, .chat_wrap
 	overflow-y: auto
 
+.chat_wrap
+	flex-grow: 1
+
 .aside
 	width: $aside_width
 	height: 100%
@@ -21,8 +24,6 @@ $aside_width: 300px
 	& > *
 		padding: 10px
 
-	.chat_wrap
-		width: calc(100% - $aside_width)
 
 	.chat
 		border: 1px solid $main_color
