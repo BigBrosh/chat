@@ -109,6 +109,58 @@ class mainPage extends React.Component {
 					<div className="top_line">
 						<p className="chat_active_title">Nickname or group</p>
 					</div>
+
+					<ul className="messageWrap">
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+
+						<li className="message_item fromLogged">
+							<p className="sender">My nickname</p>
+							<p className="message">Well, it's fine</p>
+						</li>
+
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+
+						<li className="message_item fromLogged">
+							<p className="sender">My nickname</p>
+							<p className="message">Well, it's fine</p>
+						</li>
+
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+
+						<li className="message_item fromLogged">
+							<p className="sender">My nickname</p>
+							<p className="message">Well, it's fine</p>
+						</li>
+
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+
+						<li className="message_item fromLogged">
+							<p className="sender">My nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be :)</p>
+						</li>
+
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
+					</ul>
 				</div>
 			</div>
 		);
