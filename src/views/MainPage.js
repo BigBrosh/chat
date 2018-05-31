@@ -19,6 +19,12 @@ class mainPage extends React.Component {
 		}
 	}
 
+	componentDidMount = () => {
+		let messageWrap = document.querySelector('.messageWrap');
+		console.log(messageWrap.scrollHeight );
+		messageWrap.scroll(0, messageWrap.scrollHeight );
+	}
+
 	render = () => {		
 		return (
 			<div className="main_chat_wrap">

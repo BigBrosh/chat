@@ -27,11 +27,15 @@ $aside_width: 300px
 	flex-direction: column
 
 .aside
+	display: flex
+	flex-direction: column
 	width: $aside_width
 	height: 100%
 	border-right: 1px solid $additional_color
-	overflow-y: auto
-
+	overflow: hidden
+	.available_chats
+		overflow-y: auto
+		flex-grow: 1
 	.chat
 		border: 1px solid $main_color
 		margin-bottom: 10px
@@ -76,7 +80,7 @@ p.chat_active_title
 	margin-top: 20px
 	position: relative		
 	textarea
-		height: 80px
+		height: 70px
 		padding: 10px
 		padding-right: 46px
 		width: 100%
@@ -88,7 +92,7 @@ p.chat_active_title
 			transition: .2s
 			border-color: $main_color
 	#send_message
-		padding: 12px
+		padding: 10px
 		position: absolute
 		right: 30px
 		bottom: 50%
@@ -96,8 +100,8 @@ p.chat_active_title
 		border: none
 		background: url('../../img/send.svg') no-repeat center
 		background-size: contain
-		opacity: .7
+		opacity: .5
 		transition: .2s
 		&:hover
-			opacity: 1
+			opacity: .75
 			transition: .2s
