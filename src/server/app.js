@@ -7,6 +7,8 @@ import { serverPort } from '../configs/config.json';
 import * as db from './utils/dataBaseUtils';
 
 const app = express();
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
 
 db.setUpConnection();
 
@@ -66,6 +68,10 @@ app.post('/users', (req, res) => {
 // 	db.deleteUser(req.params.id).then(data => res.send(data));
 // });
 
-const server = app.listen(serverPort, () => {
+http.listen(serverPort, () => {
 	console.log(`Server is running on port ${serverPort}`);
+});
+
+io.on('connection', function (socket) {
+	console.log('user connected!');
 });

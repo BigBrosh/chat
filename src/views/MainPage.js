@@ -23,6 +23,8 @@ class mainPage extends React.Component {
 		// scrolling to the bottom of the chat history
 		let messageWrap = document.querySelector('.messageWrap');
 		messageWrap.scroll(0, messageWrap.scrollHeight );
+
+		let socket = window.io.connect('http://localhost:8080');
 	}
 
 	render = () => {		
