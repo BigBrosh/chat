@@ -20,8 +20,8 @@ class mainPage extends React.Component {
 	}
 
 	componentDidMount = () => {
+		// scrolling to the bottom of the chat history
 		let messageWrap = document.querySelector('.messageWrap');
-		console.log(messageWrap.scrollHeight );
 		messageWrap.scroll(0, messageWrap.scrollHeight );
 	}
 
