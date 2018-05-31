@@ -18,17 +18,19 @@ $aside_width: 300px
 	padding: 10px
 
 .aside, .chat_wrap
-	overflow-y: auto
 	& > *
 		padding: 10px
 
 .chat_wrap
 	flex-grow: 1
+	display: flex
+	flex-direction: column
 
 .aside
 	width: $aside_width
 	height: 100%
 	border-right: 1px solid $additional_color
+	overflow-y: auto
 
 	.chat
 		border: 1px solid $main_color
@@ -50,6 +52,8 @@ p.chat_active_title
 .messageWrap
 	display: flex
 	flex-direction: column
+	flex-grow: 1
+	overflow-y: auto
 	.message_item
 		max-width: 65%
 		margin-bottom: 15px
@@ -66,3 +70,34 @@ p.chat_active_title
 			margin-right: initial
 			margin-left: auto
 			text-align: left		
+
+// Message input
+.message_input_wrap
+	margin-top: 20px
+	position: relative		
+	textarea
+		height: 80px
+		padding: 10px
+		padding-right: 46px
+		width: 100%
+		resize: none
+		outline: none
+		border: 1px solid $additional_color
+		transition: .2s
+		&:focus
+			transition: .2s
+			border-color: $main_color
+	#send_message
+		padding: 12px
+		position: absolute
+		right: 30px
+		bottom: 50%
+		transform: translateY(50%)
+		border: none
+		background: url('../../img/send.svg') no-repeat center
+		background-size: contain
+		opacity: .7
+		transition: .2s
+		&:hover
+			opacity: 1
+			transition: .2s

@@ -128,7 +128,7 @@ class mainPage extends React.Component {
 
 						<li className="message_item fromLogged">
 							<p className="sender">My nickname</p>
-							<p className="message">Well, it's fine</p>
+							<p className="message">Well, it's fine, but we can do better</p>
 						</li>
 
 						<li className="message_item">
@@ -161,6 +161,11 @@ class mainPage extends React.Component {
 							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
 						</li>
 					</ul>
+
+					<div className="message_input_wrap">
+						<textarea id="message_input" />
+						<button id="send_message"></button>
+					</div>
 				</div>
 			</div>
 		);
