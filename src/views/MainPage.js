@@ -199,6 +199,10 @@ class mainPage extends React.Component {
 							<p className="sender">Some nickname</p>
 							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
 						</li>
+						<li className="message_item">
+							<p className="sender">Some nickname</p>
+							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+						</li>
 					</ul>
 
 					<div className="message_input_wrap">
