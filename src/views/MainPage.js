@@ -37,15 +37,13 @@ class mainPage extends React.Component {
 	}
 
 	initSocket = () => {
-		var socket = io(`http://${config.db.host}:${config.serverPort}`);
+		let socket = io(`http://${config.db.host}:${config.serverPort}`),
+			self = this;
 
-		socket.on('connect', function () {
-			console.log('user connected 1!');
-		});
-		
-		socket.on('send-message', function(msg) {
+		socket.on('receive message', function(msg) {
 			console.log(`mes: ${msg}`);
-			this.setState({
+
+			self.setState({
 				messages: msg
 			});
 		});
@@ -57,12 +55,10 @@ class mainPage extends React.Component {
 
 	sendMessage = () => {
 		let message = document.getElementById('message_input').value;
-		this.state.socket.emit('send-message', message);
+		this.state.socket.emit('send message', message);
 	}
 
 	render = () => {
-		console.log(this.state.socket);
-
 		return (
 			<div className="main_chat_wrap">
 				<div className="aside">

@@ -74,6 +74,6 @@ io.on('connection', function (socket) {
 	console.log('user connected!');	
 
 	socket.on('send message', function(msg) {
-		console.log(`new message: ${msg}`);
+		io.emit('receive message', msg);
 	});	
 });
