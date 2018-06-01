@@ -2,12 +2,21 @@ import React from 'react';
 
 import '../styles/chat_page/chat.sass';
 
+import config from '../configs/config.json';
+
+import io from 'socket.io-client/dist/socket.io';
+
 import RequestController from '../controllers/RequestController';
 
 import createBrowserHistory from 'history/createBrowserHistory';
 const history = createBrowserHistory();
 
 class mainPage extends React.Component {
+	state = {
+		messages: '',
+		socket: null
+	}
+
 	componentWillMount = () => {
 		let logged = RequestController.getFromLocal('logged');
 
@@ -17,17 +26,43 @@ class mainPage extends React.Component {
 			history.replace('/login');
 			history.go();
 		}
+
+		this.initSocket();
 	}
 
 	componentDidMount = () => {
 		// scrolling to the bottom of the chat history
 		let messageWrap = document.querySelector('.messageWrap');
 		messageWrap.scroll(0, messageWrap.scrollHeight );
-
-		let socket = window.io.connect('http://localhost:8080');
 	}
 
-	render = () => {		
+	initSocket = () => {
+		var socket = io(`http://${config.db.host}:${config.serverPort}`);
+
+		socket.on('connect', function () {
+			console.log('user connected 1!');
+		});
+		
+		socket.on('send-message', function(msg) {
+			console.log(`mes: ${msg}`);
+			this.setState({
+				messages: msg
+			});
+		});
+
+		this.setState({
+			socket: socket
+		});
+	}
+
+	sendMessage = () => {
+		let message = document.getElementById('message_input').value;
+		this.state.socket.emit('send-message', message);
+	}
+
+	render = () => {
+		console.log(this.state.socket);
+
 		return (
 			<div className="main_chat_wrap">
 				<div className="aside">
@@ -172,7 +207,7 @@ class mainPage extends React.Component {
 
 					<div className="message_input_wrap">
 						<textarea id="message_input" />
-						<button id="send_message"></button>
+						<button id="send_message" onClick={this.sendMessage}></button>
 					</div>
 				</div>
 			</div>

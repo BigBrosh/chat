@@ -64,14 +64,16 @@ app.post('/users', (req, res) => {
 	}
 });
 
-// app.delete('/users/:id', (req, res) => {
-// 	db.deleteUser(req.params.id).then(data => res.send(data));
-// });
-
 http.listen(serverPort, () => {
 	console.log(`Server is running on port ${serverPort}`);
 });
 
+// socket logic
+
 io.on('connection', function (socket) {
-	console.log('user connected!');
+	console.log('user connected!');	
+
+	socket.on('send message', function(msg) {
+		console.log(`new message: ${msg}`);
+	});	
 });
