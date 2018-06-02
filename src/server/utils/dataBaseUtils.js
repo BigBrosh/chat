@@ -22,6 +22,10 @@ export function findUser(name) {
 	return User.find({ name: name });
 }
 
+export function findUsers(names) {
+	return User.find({ name: {$in: names} });
+}
+
 export function createUser(data) {
 	let user = new User({
 		name: data.name,
@@ -43,4 +47,12 @@ export function clearUserDB() {
 
 export function listChats() {
 	return Chat.find();
+}
+
+export function createChat(ids) {
+	let chat = new Chat({
+		availableUsers: ids
+	});
+
+	return chat.save();
 }

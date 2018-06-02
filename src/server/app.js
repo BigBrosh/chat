@@ -70,6 +70,23 @@ app.post('/users', (req, res) => {
 	}
 });
 
+app.post('/chats', (req, res) => {
+
+	if (req.body.action === actions.CREATE_CHAT)
+	{
+		db.findUsers(req.body.data)
+		.then(response => {
+			let ids = response.map(el => {
+				return el._id;
+			});
+
+			console.log(ids);
+
+			db.createChat(ids);
+		});		
+	}
+});
+
 http.listen(serverPort, () => {
 	console.log(`Server is running on port ${serverPort}`);
 });

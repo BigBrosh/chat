@@ -8,7 +8,7 @@ import io from 'socket.io-client/dist/socket.io';
 
 import RequestController from '../controllers/RequestController';
 import actions from '../actions/actions';
-import { apiPrefix, db } from '../configs/config.json';
+import { apiPrefix, db, chat_db } from '../configs/config.json';
 
 import createBrowserHistory from 'history/createBrowserHistory';
 const history = createBrowserHistory();
@@ -100,6 +100,17 @@ class mainPage extends React.Component {
 		});
 	}
 
+	createChat = () => {
+		fetch( `${apiPrefix}/${chat_db}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.CREATE_CHAT,
+				data: this.state.usersToCreateChat
+			})
+		});
+	}
+
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
@@ -132,7 +143,10 @@ class mainPage extends React.Component {
 							{ availableUsers }
 						</ul>
 
-						{ 	this.state.usersToCreateChat.length !== 0 ?
+						{ 	
+							this.state.usersToCreateChat.length !== 0
+							?
+
 							<div>
 								<p>Choosed users (remove by click):</p>
 
@@ -140,8 +154,10 @@ class mainPage extends React.Component {
 									{ usersToCreateChat }
 								</ul>
 
-								<button className="create_button">Create</button>
-							</div> :
+								<button className="create_button" onClick={this.createChat}>Create</button>
+							</div>
+
+							:
 							''
 						}
 					</div>
