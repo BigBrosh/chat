@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import RequestController from '../controllers/RequestController';
+import actions from '../actions/actions';
 
 import { apiPrefix, db } from '../configs/config.json';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -62,7 +63,7 @@ class LoginPage extends React.Component {
 				method: 'POST',
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					action: 'login',
+					action: actions.LOGIN,
 					data: {
 						name: nickname,
 						password: password

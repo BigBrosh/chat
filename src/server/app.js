@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import { serverPort } from '../configs/config.json';
+import actions from '../actions/actions';
 
 import * as db from './utils/dataBaseUtils';
 
@@ -25,11 +26,16 @@ app.use(cors({ origin: '*' }));
 
 app.get('/users', (req, res) => {
 	db.listUsers()
-	.then(data => res.send(data));
+	.then(data => res.json(data));
+});
+
+app.get('/chats', (req, res) => {
+	db.listChats()
+	.then(data => res.json(data));
 });
 
 app.post('/users', (req, res) => {
-	if (req.body.action === 'register')
+	if (req.body.action === actions.REGISTER)
 	{
 		return db.findUser(req.body.data.name)
 		.then(response => {
@@ -44,7 +50,7 @@ app.post('/users', (req, res) => {
 		});		
 	}
 
-	else if (req.body.action === 'login')
+	else if (req.body.action === actions.LOGIN)
 	{
 		db.findUser(req.body.data.name)
 		.then(response => {
@@ -73,7 +79,7 @@ http.listen(serverPort, () => {
 io.on('connection', function (socket) {
 	console.log('user connected!');	
 
-	socket.on('send message', function(msg) {
-		io.emit('receive message', msg);
+	socket.on(actions.SEND_MESSAGE, function(msg) {
+		io.emit(actions.RECEIVE_MESSAGE, msg);
 	});	
 });

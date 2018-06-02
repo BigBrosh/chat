@@ -6,6 +6,7 @@ import '../styles/main.sass';
 import '../styles/register_page/register.sass';
 
 import RequestController from '../controllers/RequestController';
+import actions from '../actions/actions';
 
 import { apiPrefix, db } from '../configs/config.json';
 
@@ -66,7 +67,7 @@ class RegisterPage extends React.Component {
 				method: 'POST',
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					action: 'register',
+					action: actions.REGISTER,
 					data: {
 						name: nickname,
 						password: password

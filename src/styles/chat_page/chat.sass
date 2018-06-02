@@ -106,3 +106,32 @@ p.chat_active_title
 		&:hover
 			opacity: .75
 			transition: .2s
+
+// creating chat model
+#createChat
+	.users_list
+		li
+			padding-left: 16px
+			position: relative
+			&:before
+				position: absolute
+				content: ''
+				width: 6px
+				height: 6px
+				border-radius: 50%
+				left: 4px
+				top: 50%
+				transform: translateY(-40%)
+		&.available_users
+			li
+				&:before
+					background: $main_color
+		&.users_to_create_chat
+			li
+				&:before
+					background: rgba($main_color, .65)
+	.create_button
+		font-size: 12px
+		padding: 5px 8px
+		margin: 5px 0px 0px auto
+		display: block

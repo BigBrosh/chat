@@ -1,9 +1,13 @@
 import mongoose from 'mongoose';
 
 import '../databaseComponents/userModel';
+import '../databaseComponents/chatsModel';
 import config from '../../configs/config.json';
 
 const User = mongoose.model('users');
+const Chat = mongoose.model('chats');
+
+// user model's methods
 
 export function setUpConnection() {
 	mongoose.Promise = global.Promise;
@@ -31,6 +35,12 @@ export function deleteUser(id) {
 	return User.findById(id).remove();
 }
 
-export function clearDB() {
+export function clearUserDB() {
 	User.collection.remove();
+}
+
+// chat model's methods
+
+export function listChats() {
+	return Chat.find();
 }
