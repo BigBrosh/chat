@@ -31,19 +31,6 @@ class mainPage extends React.Component {
 			history.replace('/login');
 			history.go();
 		}
-
-		fetch( `${apiPrefix}/${db.name}`, {
-			method: 'GET',
-			headers: { "Content-Type": "application/json" }
-		})
-		.then(data => {
-			data.json()
-			.then(response => {
-				this.setState({
-					availableUsers: response
-				});
-			})
-		});
 	}
 
 	componentDidMount = () => {
@@ -115,6 +102,19 @@ class mainPage extends React.Component {
 	openModal = () => {
 		this.setState({
 			displayCreateModal: true
+		});
+
+		fetch( `${apiPrefix}/${db.name}`, {
+			method: 'GET',
+			headers: { "Content-Type": "application/json" }
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				this.setState({
+					availableUsers: response
+				});
+			})
 		});
 	}
 
