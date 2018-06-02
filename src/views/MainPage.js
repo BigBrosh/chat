@@ -18,6 +18,7 @@ class mainPage extends React.Component {
 		messages: '',
 		availableUsers: '',
 		usersToCreateChat: [],
+		displayCreateModal: false,
 		socket: null
 	}
 
@@ -111,6 +112,18 @@ class mainPage extends React.Component {
 		});
 	}
 
+	openModal = () => {
+		this.setState({
+			displayCreateModal: true
+		});
+	}
+
+	closeModal = () => {
+		this.setState({
+			displayCreateModal: false
+		});
+	}
+
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
@@ -133,9 +146,9 @@ class mainPage extends React.Component {
 
 		return (
 			<div className="main_chat_wrap">
-				<div id="createChat" className="modal">
+				<div id="createChat" className="modal" style={{display: this.state.displayCreateModal === true ? 'block' : 'none'}} >
 					<div className="inner_wrap">
-						<p className="title stylized_title">Create new chat</p>
+						<p className="title stylized_title">Create new chat<span className="close_button" onClick={this.closeModal}></span></p>
 
 						<p>Choose users from list:</p>
 
@@ -165,7 +178,7 @@ class mainPage extends React.Component {
 
 				<div className="aside">
 					<div className="top_line">
-						<button>Create chat</button>
+						<button onClick={this.openModal}>Create chat</button>
 					</div>
 
 					<ul className="available_chats">
