@@ -4,7 +4,8 @@ const actions = {
 	LOGIN: 'login',
 	REGISTER: 'register',
 	FIND_USERS: 'find_users',
-	CREATE_CHAT: 'create_chat'
+	CREATE_CHAT: 'create_chat',
+	SHOW_CHATS: 'show_chats'
 }
 
 export default actions;

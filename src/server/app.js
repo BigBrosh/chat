@@ -80,10 +80,17 @@ app.post('/chats', (req, res) => {
 				return el._id;
 			});
 
-			console.log(ids);
-
 			db.createChat(ids);
 		});		
+	}
+
+	else if (req.body.action === actions.SHOW_CHATS)
+	{
+		db.findUsers(req.body.data)
+		.then(response => {
+			db.listUsersChats(response[0]._id)
+			.then(response => res.json(response));
+		});
 	}
 });
 

@@ -17,9 +17,10 @@ class mainPage extends React.Component {
 	state = {
 		messages: '',
 		availableUsers: '',
-		usersToCreateChat: [],
+		usersToCreateChat: [RequestController.getFromLocal('login')],
 		displayCreateModal: false,
-		socket: null
+		socket: null,
+		successCreatedChat: false
 	}
 
 	componentWillMount = () => {
@@ -31,6 +32,24 @@ class mainPage extends React.Component {
 			history.replace('/login');
 			history.go();
 		}
+
+		let login = RequestController.getFromLocal('login');
+
+		// available chats
+		fetch( `${apiPrefix}/${chat_db}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.SHOW_CHATS,
+				data: login
+			})
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				console.log(response);
+			});
+		});
 	}
 
 	componentDidMount = () => {
@@ -97,11 +116,16 @@ class mainPage extends React.Component {
 				data: this.state.usersToCreateChat
 			})
 		});
+
+		this.setState({
+			successCreatedChat: true
+		});
 	}
 
 	openModal = () => {
 		this.setState({
-			displayCreateModal: true
+			displayCreateModal: true,
+			successCreatedChat: false
 		});
 
 		fetch( `${apiPrefix}/${db.name}`, {
@@ -120,7 +144,9 @@ class mainPage extends React.Component {
 
 	closeModal = () => {
 		this.setState({
-			displayCreateModal: false
+			successCreatedChat: false,
+			displayCreateModal: false,
+			usersToCreateChat: [RequestController.getFromLocal('login')]
 		});
 	}
 
@@ -136,10 +162,11 @@ class mainPage extends React.Component {
 					return <li key={i} onClick={this.addToUserList}>{ el.name }</li>
 			});
 
-			if (this.state.usersToCreateChat.length !== 0)
+			if (this.state.usersToCreateChat.length > 1)
 			{
 				usersToCreateChat = this.state.usersToCreateChat.map((el, i) => {
-					return <li key={i} onClick={this.removeFromUserList}>{el}</li>
+					if (i !== 0)
+						return <li key={i} onClick={this.removeFromUserList}>{el}</li>
 				});
 			}
 		}
@@ -157,7 +184,7 @@ class mainPage extends React.Component {
 						</ul>
 
 						{ 	
-							this.state.usersToCreateChat.length !== 0
+							this.state.usersToCreateChat.length > 1
 							?
 
 							<div>
@@ -166,6 +193,8 @@ class mainPage extends React.Component {
 								<ul className="users_list users_to_create_chat">
 									{ usersToCreateChat }
 								</ul>
+
+								{ this.state.successCreatedChat === false ? '' : <p className="success_message">Chat created!</p> }
 
 								<button className="create_button" onClick={this.createChat}>Create</button>
 							</div>

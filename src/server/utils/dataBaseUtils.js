@@ -49,10 +49,18 @@ export function listChats() {
 	return Chat.find();
 }
 
+export function listUsersChats(id) {
+	return Chat.find({ availableUsers: id });
+}
+
 export function createChat(ids) {
 	let chat = new Chat({
 		availableUsers: ids
 	});
 
 	return chat.save();
+}
+
+export function clearChatsDB() {
+	Chat.collection.remove();
 }
