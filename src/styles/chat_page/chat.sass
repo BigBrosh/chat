@@ -60,6 +60,7 @@ p.chat_active_title
 	flex-grow: 1
 	overflow-y: auto
 	.message_item
+		position: relative			
 		max-width: 65%
 		min-width: 65px
 		margin-bottom: 15px
@@ -67,6 +68,12 @@ p.chat_active_title
 		margin-right: auto
 		border: 1px solid $main_color
 		border-radius: 6px
+		.date
+			position: absolute
+			min-width: 	110px
+			opacity: .3
+			top: 0px
+			left: 100%
 		.sender
 			border-bottom: 1px solid $additional_color
 			color: $nickname_color
@@ -75,7 +82,10 @@ p.chat_active_title
 		&.fromLogged
 			margin-right: initial
 			margin-left: auto
-			text-align: left		
+			text-align: left
+			.date
+				left: initial
+				right: 100%
 
 // Message input
 .message_input_wrap

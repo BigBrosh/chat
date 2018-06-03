@@ -129,7 +129,8 @@ class mainPage extends React.Component {
 	}
 
 	sendMessage = () => {
-		let message = document.getElementById('message_input').value;
+		let input = document.getElementById('message_input'),
+			message = input.value;
 
 		this.state.socket.emit(actions.SEND_MESSAGE, {
 			chatId: this.state.availableChats[this.state.activeChat]._id,
@@ -138,6 +139,8 @@ class mainPage extends React.Component {
 			message: message,
 			date: new Date()
 		});
+
+		input.value = '';
 	}
 
 
@@ -261,10 +264,13 @@ class mainPage extends React.Component {
 		if (this.state.activeChat !== '' && this.state.messages[this.state.availableChats[this.state.activeChat]._id])
 		{
 			messages = this.state.messages[this.state.availableChats[this.state.activeChat]._id].map((el, i) => {
+				let date = new Date(el.date);
+
 				return 	(
 				<li className={el.senderNickName === this.state.login ? 'message_item fromLogged' : 'message_item'} key={i} >
 					<p className="sender">{ el.senderNickName }</p>
 					<p className="message">{ el.message }</p>
+					<p className="date">{ `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}  ${date.getHours()}:${date.getMinutes()}` }</p>
 				</li>
 				)
 			});
