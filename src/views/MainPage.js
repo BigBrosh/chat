@@ -2,6 +2,8 @@ import React from 'react';
 
 import '../styles/chat_page/chat.sass';
 
+import logoutIco from '../img/log-out-symbol.svg';
+
 import config from '../configs/config.json';
 
 import io from 'socket.io-client/dist/socket.io';
@@ -28,14 +30,7 @@ class mainPage extends React.Component {
 	}
 
 	componentWillMount = () => {
-		let logged = RequestController.getFromLocal('logged');
-
-		if (logged === false ||
-			!logged)
-		{
-			history.replace('/login');
-			history.go();
-		}
+		this.checkUser();
 
 		// get user id
 		fetch( `${apiPrefix}/${db.name}`, {
@@ -126,6 +121,19 @@ class mainPage extends React.Component {
 		this.setState({
 			socket: socket
 		});
+	}
+
+	// check user
+	checkUser = () => {
+		let logged = RequestController.getFromLocal('logged');
+
+		if (logged === false ||
+			!logged ||
+			logged === null)
+		{
+			history.replace('/login');
+			history.go();
+		}	
 	}
 
 	sendMessage = () => {
@@ -220,6 +228,11 @@ class mainPage extends React.Component {
 		});
 	}
 
+	logOut = () => {
+		RequestController.sendToLocal({ 'login': null, 'logged': null });
+		this.checkUser();
+	}
+
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
@@ -311,6 +324,9 @@ class mainPage extends React.Component {
 				<div className="aside">
 					<div className="top_line">
 						<button onClick={this.openModal}>Create chat</button>
+						<button className="logout" onClick={this.logOut}>
+							<img src={logoutIco} alt="logout" />
+						</button>
 					</div>
 
 					<ul className="available_chats">

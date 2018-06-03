@@ -3129,13 +3129,13 @@ var _MainPage = __webpack_require__(78);
 
 var _MainPage2 = _interopRequireDefault(_MainPage);
 
-var _RegisterPage = __webpack_require__(85);
+var _RegisterPage = __webpack_require__(86);
 
 var _RegisterPage2 = _interopRequireDefault(_RegisterPage);
 
-var _ErrorPage = __webpack_require__(90);
+var _ErrorPage = __webpack_require__(91);
 
-var _LoginPage = __webpack_require__(91);
+var _LoginPage = __webpack_require__(92);
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
@@ -25168,11 +25168,15 @@ var _react2 = _interopRequireDefault(_react);
 
 __webpack_require__(79);
 
+var _logOutSymbol = __webpack_require__(84);
+
+var _logOutSymbol2 = _interopRequireDefault(_logOutSymbol);
+
 var _config = __webpack_require__(25);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _socket = __webpack_require__(84);
+var _socket = __webpack_require__(85);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -25224,12 +25228,7 @@ var mainPage = function (_React$Component) {
 			successCreatedChat: false,
 			activeChat: ''
 		}, _this.componentWillMount = function () {
-			var logged = _RequestController2.default.getFromLocal('logged');
-
-			if (logged === false || !logged) {
-				history.replace('/login');
-				history.go();
-			}
+			_this.checkUser();
 
 			// get user id
 			fetch(_config.apiPrefix + '/' + _config.db.name, {
@@ -25309,6 +25308,13 @@ var mainPage = function (_React$Component) {
 			_this.setState({
 				socket: socket
 			});
+		}, _this.checkUser = function () {
+			var logged = _RequestController2.default.getFromLocal('logged');
+
+			if (logged === false || !logged || logged === null) {
+				history.replace('/login');
+				history.go();
+			}
 		}, _this.sendMessage = function () {
 			var input = document.getElementById('message_input'),
 			    message = input.value;
@@ -25383,6 +25389,9 @@ var mainPage = function (_React$Component) {
 			_this.setState({
 				activeChat: index
 			});
+		}, _this.logOut = function () {
+			_RequestController2.default.sendToLocal({ 'login': null, 'logged': null });
+			_this.checkUser();
 		}, _this.render = function () {
 			var currentUser = _RequestController2.default.getFromLocal('login'),
 			    availableUsers = void 0,
@@ -25528,6 +25537,11 @@ var mainPage = function (_React$Component) {
 							'button',
 							{ onClick: _this.openModal },
 							'Create chat'
+						),
+						_react2.default.createElement(
+							'button',
+							{ className: 'logout', onClick: _this.logOut },
+							_react2.default.createElement('img', { src: _logOutSymbol2.default, alt: 'logout' })
 						)
 					),
 					_react2.default.createElement(
@@ -25565,6 +25579,9 @@ var mainPage = function (_React$Component) {
 			);
 		}, _temp), _possibleConstructorReturn(_this, _ret);
 	}
+
+	// check user
+
 
 	// chat creating
 
@@ -25637,7 +25654,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n\n.main_chat_wrap {\n  height: calc(100vh - 20px);\n  margin: 10px 0px;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.top_line {\n  min-height: 55px;\n  display: flex;\n  align-items: center;\n  padding: 10px; }\n\n.aside > *, .chat_wrap > * {\n  padding: 10px; }\n\n.chat_wrap {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column; }\n\n.aside {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5;\n  overflow: hidden; }\n  .aside .available_chats {\n    overflow-y: auto;\n    flex-grow: 1; }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5; }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n\np.chat_active_title {\n  font-size: 22px; }\n\n.messageWrap {\n  display: flex;\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  overflow-y: auto; }\n  .messageWrap .message_item {\n    position: relative;\n    max-width: 65%;\n    min-width: 65px;\n    margin-bottom: 15px;\n    text-align: right;\n    margin-right: auto;\n    border: 1px solid #43bd5f;\n    border-radius: 6px; }\n    .messageWrap .message_item .date {\n      position: absolute;\n      min-width: 110px;\n      opacity: .3;\n      top: 0px;\n      left: 100%; }\n    .messageWrap .message_item .sender {\n      border-bottom: 1px solid #62cfa5;\n      color: #1e8cd4; }\n    .messageWrap .message_item > * {\n      padding: 4px 8px; }\n    .messageWrap .message_item.fromLogged {\n      margin-right: initial;\n      margin-left: auto;\n      text-align: left; }\n      .messageWrap .message_item.fromLogged .date {\n        left: initial;\n        right: 100%; }\n\n.message_input_wrap {\n  margin-top: 20px;\n  position: relative; }\n  .message_input_wrap textarea {\n    height: 70px;\n    padding: 10px;\n    padding-right: 46px;\n    width: 100%;\n    resize: none;\n    outline: none;\n    border: 1px solid #62cfa5;\n    transition: .2s; }\n    .message_input_wrap textarea:focus {\n      transition: .2s;\n      border-color: #43bd5f; }\n  .message_input_wrap #send_message {\n    padding: 10px;\n    position: absolute;\n    right: 30px;\n    bottom: 50%;\n    transform: translateY(50%);\n    border: none;\n    background: url(" + escape(__webpack_require__(82)) + ") no-repeat center;\n    background-size: contain;\n    opacity: .5;\n    transition: .2s; }\n    .message_input_wrap #send_message:hover {\n      opacity: .75;\n      transition: .2s; }\n\n#createChat .users_list li {\n  padding-left: 16px;\n  position: relative; }\n  #createChat .users_list li:before {\n    position: absolute;\n    content: '';\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    left: 4px;\n    top: 50%;\n    transform: translateY(-40%); }\n\n#createChat .users_list.available_users li:before {\n  background: #43bd5f; }\n\n#createChat .users_list.users_to_create_chat li:before {\n  background: rgba(67, 189, 95, 0.65); }\n\n#createChat .create_button {\n  font-size: 12px;\n  padding: 5px 8px;\n  margin: 5px 0px 0px auto;\n  display: block; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\nh2 {\n  margin: 10px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n\n.logout {\n  padding: 0px;\n  border: none;\n  opacity: .65;\n  transition: .25; }\n  .logout:hover {\n    background: none;\n    transition: .25;\n    opacity: .9; }\n  .logout img {\n    width: 26px; }\n\n.main_chat_wrap {\n  height: calc(100vh - 20px);\n  margin: 10px 0px;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.top_line {\n  min-height: 55px;\n  display: flex;\n  align-items: center;\n  padding: 10px; }\n\n.aside > *, .chat_wrap > * {\n  padding: 10px; }\n\n.chat_wrap {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column; }\n\n.aside {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5;\n  overflow: hidden; }\n  .aside .top_line {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n  .aside .available_chats {\n    overflow-y: auto;\n    flex-grow: 1; }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5; }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n\np.chat_active_title {\n  font-size: 22px; }\n\n.messageWrap {\n  display: flex;\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  overflow-y: auto; }\n  .messageWrap .message_item {\n    position: relative;\n    max-width: 65%;\n    min-width: 65px;\n    margin-bottom: 15px;\n    text-align: right;\n    margin-right: auto;\n    border: 1px solid #43bd5f;\n    border-radius: 6px; }\n    .messageWrap .message_item .date {\n      position: absolute;\n      min-width: 110px;\n      opacity: .3;\n      top: 0px;\n      left: 100%; }\n    .messageWrap .message_item .sender {\n      border-bottom: 1px solid #62cfa5;\n      color: #1e8cd4; }\n    .messageWrap .message_item > * {\n      padding: 4px 8px; }\n    .messageWrap .message_item.fromLogged {\n      margin-right: initial;\n      margin-left: auto;\n      text-align: left; }\n      .messageWrap .message_item.fromLogged .date {\n        left: initial;\n        right: 100%; }\n\n.message_input_wrap {\n  margin-top: 20px;\n  position: relative; }\n  .message_input_wrap textarea {\n    height: 70px;\n    padding: 10px;\n    padding-right: 46px;\n    width: 100%;\n    resize: none;\n    outline: none;\n    border: 1px solid #62cfa5;\n    transition: .2s; }\n    .message_input_wrap textarea:focus {\n      transition: .2s;\n      border-color: #43bd5f; }\n  .message_input_wrap #send_message {\n    padding: 10px;\n    position: absolute;\n    right: 30px;\n    bottom: 50%;\n    transform: translateY(50%);\n    border: none;\n    background: url(" + escape(__webpack_require__(82)) + ") no-repeat center;\n    background-size: contain;\n    opacity: .5;\n    transition: .2s; }\n    .message_input_wrap #send_message:hover {\n      opacity: .75;\n      transition: .2s; }\n\n#createChat .users_list li {\n  padding-left: 16px;\n  position: relative; }\n  #createChat .users_list li:before {\n    position: absolute;\n    content: '';\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    left: 4px;\n    top: 50%;\n    transform: translateY(-40%); }\n\n#createChat .users_list.available_users li:before {\n  background: #43bd5f; }\n\n#createChat .users_list.users_to_create_chat li:before {\n  background: rgba(67, 189, 95, 0.65); }\n\n#createChat .create_button {\n  font-size: 12px;\n  padding: 5px 8px;\n  margin: 5px 0px 0px auto;\n  display: block; }\n", ""]);
 
 // exports
 
@@ -25769,6 +25786,12 @@ module.exports = function (css) {
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__.p + "f91a0ffb92229822b0300ab1b3b92bcf.svg";
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /*!
  * Socket.IO v2.1.1
  * (c) 2014-2018 Guillermo Rauch
@@ -25779,7 +25802,7 @@ p||(p=u?443:80),r=e.hostname!==location.hostname||p!==e.port,a=e.secure!==u}if(e
 //# sourceMappingURL=socket.io.js.map
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25795,9 +25818,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(13);
 
-__webpack_require__(86);
+__webpack_require__(87);
 
-__webpack_require__(88);
+__webpack_require__(89);
 
 var _RequestController = __webpack_require__(26);
 
@@ -25960,11 +25983,11 @@ var RegisterPage = function (_React$Component) {
 exports.default = RegisterPage;
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(87);
+var content = __webpack_require__(88);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -26010,7 +26033,7 @@ if(false) {
 }
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(false);
@@ -26018,17 +26041,17 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\nh2 {\n  margin: 10px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n\n.logout {\n  padding: 0px;\n  border: none;\n  opacity: .65;\n  transition: .25; }\n  .logout:hover {\n    background: none;\n    transition: .25;\n    opacity: .9; }\n  .logout img {\n    width: 26px; }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(89);
+var content = __webpack_require__(90);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -26074,7 +26097,7 @@ if(false) {
 }
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(23)(false);
@@ -26088,7 +26111,7 @@ exports.push([module.i, ".register_form {\n  display: flex;\n  justify-content: 
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26127,7 +26150,7 @@ var ErrorPage = exports.ErrorPage = function ErrorPage() {
 };
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
