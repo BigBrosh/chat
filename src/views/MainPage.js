@@ -15,14 +15,15 @@ const history = createBrowserHistory();
 
 class mainPage extends React.Component {
 	state = {
+		login: RequestController.getFromLocal('login'),
+		socket: null,
 		messages: '',
 		availableUsers: '',
 		availableChats: [],
 		usersToCreateChat: [RequestController.getFromLocal('login')],
 		displayCreateModal: false,
-		socket: null,
 		successCreatedChat: false,
-		login: RequestController.getFromLocal('login')
+		activeChat: ''
 	}
 
 	componentWillMount = () => {
@@ -84,6 +85,44 @@ class mainPage extends React.Component {
 		this.state.socket.emit(actions.SEND_MESSAGE, message);
 	}
 
+
+	// chat creating
+	createChat = () => {
+		fetch( `${apiPrefix}/${chat_db}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.CREATE_CHAT,
+				data: this.state.usersToCreateChat
+			})
+		});
+
+		this.setState({
+			successCreatedChat: true
+		});
+	}
+
+	// modal logic
+	openModal = () => {
+		this.setState({
+			displayCreateModal: true,
+			successCreatedChat: false
+		});
+
+		fetch( `${apiPrefix}/${db.name}`, {
+			method: 'GET',
+			headers: { "Content-Type": "application/json" }
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				this.setState({
+					availableUsers: response
+				});
+			})
+		});
+	}
+
 	addToUserList = e => {
 		let user = e.target.innerHTML;
 
@@ -109,46 +148,17 @@ class mainPage extends React.Component {
 		});
 	}
 
-	createChat = () => {
-		fetch( `${apiPrefix}/${chat_db}`, {
-			method: 'POST',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				action: actions.CREATE_CHAT,
-				data: this.state.usersToCreateChat
-			})
-		});
-
-		this.setState({
-			successCreatedChat: true
-		});
-	}
-
-	openModal = () => {
-		this.setState({
-			displayCreateModal: true,
-			successCreatedChat: false
-		});
-
-		fetch( `${apiPrefix}/${db.name}`, {
-			method: 'GET',
-			headers: { "Content-Type": "application/json" }
-		})
-		.then(data => {
-			data.json()
-			.then(response => {
-				this.setState({
-					availableUsers: response
-				});
-			})
-		});
-	}
-
 	closeModal = () => {
 		this.setState({
 			successCreatedChat: false,
 			displayCreateModal: false,
 			usersToCreateChat: [RequestController.getFromLocal('login')]
+		});
+	}
+
+	goToChat = index => {
+		this.setState({
+			activeChat: index
 		});
 	}
 
@@ -158,6 +168,7 @@ class mainPage extends React.Component {
 			usersToCreateChat,
 			availableChats;
 
+		// available users for chat creating
 		if (this.state.availableUsers !== '')
 		{
 			availableUsers = this.state.availableUsers.map((el, i) => {
@@ -165,6 +176,7 @@ class mainPage extends React.Component {
 					return <li key={i} onClick={this.addToUserList}>{ el.name }</li>
 			});
 
+			// chosen users
 			if (this.state.usersToCreateChat.length > 1)
 			{
 				usersToCreateChat = this.state.usersToCreateChat.map((el, i) => {
@@ -174,13 +186,14 @@ class mainPage extends React.Component {
 			}
 		}
 
+		// displaying chats which are available for current user
 		if (this.state.availableChats.length !== 0)
 		{
 			availableChats = this.state.availableChats.map((chat, i) => {
 				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', ');
 
 				return (
-				<li className="chat" key={i}>
+				<li className="chat" key={i} onClick={() => this.goToChat(i)}>
 					<p className="chat_title">{ users }</p>
 					<p className="chat_preview">Last message</p>
 				</li>
@@ -234,63 +247,24 @@ class mainPage extends React.Component {
 
 				<div className="chat_wrap">
 					<div className="top_line">
-						<p className="chat_active_title">Nickname or group</p>
+						<p className="chat_active_title">
+							{ 
+								this.state.activeChat === '' ?
+								'Choose or create chat' :
+								this.state.availableChats[this.state.activeChat].availableUsers.filter(el => el !== this.state.login).join(', ')
+							}
+						</p>
 					</div>
 
 					<ul className="messageWrap">
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
+						{/* 
+							message template
 
-						<li className="message_item fromLogged">
-							<p className="sender">My nickname</p>
-							<p className="message">Well, it's fine</p>
-						</li>
-
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
-
-						<li className="message_item fromLogged">
-							<p className="sender">My nickname</p>
-							<p className="message">Well, it's fine, but we can do better</p>
-						</li>
-
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
-
-						<li className="message_item fromLogged">
-							<p className="sender">My nickname</p>
-							<p className="message">Well, it's fine</p>
-						</li>
-
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
-
-						<li className="message_item fromLogged">
-							<p className="sender">My nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
-
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be :)</p>
-						</li>
-
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
-						<li className="message_item">
-							<p className="sender">Some nickname</p>
-							<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
-						</li>
+							<li className="message_item">
+								<p className="sender">Some nickname</p>
+								<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
+							</li> 
+						*/}
 					</ul>
 
 					<div className="message_input_wrap">
