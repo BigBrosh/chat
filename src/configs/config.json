@@ -6,5 +6,6 @@
 		"host": "localhost",
 		"port": 27017
 	},
-	"chat_db": "chats"
+	"chat_db": "chats",
+	"messages_db": "messages"
 }

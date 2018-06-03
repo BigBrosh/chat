@@ -8,7 +8,7 @@ import io from 'socket.io-client/dist/socket.io';
 
 import RequestController from '../controllers/RequestController';
 import actions from '../actions/actions';
-import { apiPrefix, db, chat_db } from '../configs/config.json';
+import { apiPrefix, db, chat_db, messages_db } from '../configs/config.json';
 
 import createBrowserHistory from 'history/createBrowserHistory';
 const history = createBrowserHistory();
@@ -16,8 +16,9 @@ const history = createBrowserHistory();
 class mainPage extends React.Component {
 	state = {
 		login: RequestController.getFromLocal('login'),
+		userId: '',
 		socket: null,
-		messages: '',
+		messages: {},
 		availableUsers: '',
 		availableChats: [],
 		usersToCreateChat: [RequestController.getFromLocal('login')],
@@ -36,6 +37,24 @@ class mainPage extends React.Component {
 			history.go();
 		}
 
+		// get user id
+		fetch( `${apiPrefix}/${db.name}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.GET_USER_ID,
+				data: this.state.login
+			})
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				this.setState({
+					userId: response[0]._id
+				})
+			});
+		});
+
 		// available chats
 		fetch( `${apiPrefix}/${chat_db}`, {
 			method: 'POST',
@@ -53,6 +72,33 @@ class mainPage extends React.Component {
 				})
 			});
 		});
+
+		// user messages
+		let messages = {};
+
+		fetch( `${apiPrefix}/${messages_db}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.GET_MESSAGES,
+				data: this.state.login
+			})
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				response.forEach((el, i) => {
+					if (!messages[el.chatId])
+						messages[el.chatId] = [];
+
+					messages[el.chatId].push(el);					
+				});
+			});
+		});
+
+		this.setState({
+			messages: messages
+		});
 	}
 
 	componentDidMount = () => {
@@ -68,10 +114,11 @@ class mainPage extends React.Component {
 			self = this;
 
 		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
-			console.log(`mes: ${msg}`);
+			let newMessages = self.state.messages[self.state.availableChats[self.state.activeChat]._id];
+			newMessages.unshift(msg);
 
 			self.setState({
-				messages: msg
+				messages: newMessages
 			});
 		});
 
@@ -82,7 +129,14 @@ class mainPage extends React.Component {
 
 	sendMessage = () => {
 		let message = document.getElementById('message_input').value;
-		this.state.socket.emit(actions.SEND_MESSAGE, message);
+
+		this.state.socket.emit(actions.SEND_MESSAGE, {
+			chatId: this.state.availableChats[this.state.activeChat]._id,
+			senderId: this.state.userId,
+			senderNickName: this.state.login,
+			message: message,
+			date: new Date()
+		});
 	}
 
 
@@ -166,7 +220,8 @@ class mainPage extends React.Component {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
 			usersToCreateChat,
-			availableChats;
+			availableChats,
+			messages = '';
 
 		// available users for chat creating
 		if (this.state.availableUsers !== '')
@@ -201,6 +256,21 @@ class mainPage extends React.Component {
 			});
 		}
 
+		// outputing messages in chats
+		if (this.state.activeChat !== '' && this.state.messages[this.state.availableChats[this.state.activeChat]._id])
+		{
+			messages = this.state.messages[this.state.availableChats[this.state.activeChat]._id].map((el, i) => {
+				return 	(
+				<li className={el.senderNickName === this.state.login ? 'message_item fromLogged' : 'message_item'} key={i} >
+					<p className="sender">{ el.senderNickName }</p>
+					<p className="message">{ el.message }</p>
+				</li>
+				)
+			});
+		}
+
+		console.log(this.state.messages);
+
 		return (
 			<div className="main_chat_wrap">
 				<div id="createChat" className="modal" style={{display: this.state.displayCreateModal === true ? 'block' : 'none'}} >
@@ -213,9 +283,7 @@ class mainPage extends React.Component {
 							{ availableUsers }
 						</ul>
 
-						{ 	
-							this.state.usersToCreateChat.length > 1
-							?
+						{ 	this.state.usersToCreateChat.length > 1	?
 
 							<div>
 								<p>Choosed users (remove by click):</p>
@@ -229,9 +297,7 @@ class mainPage extends React.Component {
 								<button className="create_button" onClick={this.createChat}>Create</button>
 							</div>
 
-							:
-							''
-						}
+							: '' }
 					</div>
 				</div>
 
@@ -265,9 +331,11 @@ class mainPage extends React.Component {
 								<p className="message">Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)</p>
 							</li> 
 						*/}
+
+						{ messages }
 					</ul>
 
-					<div className="message_input_wrap">
+					<div className="message_input_wrap" style={{ pointerEvents: this.state.activeChat === '' ? 'none' : 'auto' }}>
 						<textarea id="message_input" />
 						<button id="send_message" onClick={this.sendMessage}></button>
 					</div>

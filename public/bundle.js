@@ -2331,7 +2331,7 @@ function updateLink (link, options, obj) {
 /* 25 */
 /***/ (function(module, exports) {
 
-module.exports = {"apiPrefix":"http://localhost:8080","serverPort":"8080","db":{"name":"users","host":"localhost","port":27017},"chat_db":"chats"}
+module.exports = {"apiPrefix":"http://localhost:8080","serverPort":"8080","db":{"name":"users","host":"localhost","port":27017},"chat_db":"chats","messages_db":"messages"}
 
 /***/ }),
 /* 26 */
@@ -2379,7 +2379,11 @@ var actions = {
 	REGISTER: 'register',
 	FIND_USERS: 'find_users',
 	CREATE_CHAT: 'create_chat',
-	SHOW_CHATS: 'show_chats'
+	SHOW_CHATS: 'show_chats',
+	FIND_USER_BY_ID: 'find_user_id',
+	CREATE_MESSAGE: 'create_message',
+	GET_USER_ID: 'get_user_id',
+	GET_MESSAGES: 'get_messages'
 };
 
 exports.default = actions;
@@ -25209,12 +25213,16 @@ var mainPage = function (_React$Component) {
 		}
 
 		return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = mainPage.__proto__ || Object.getPrototypeOf(mainPage)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-			messages: '',
+			login: _RequestController2.default.getFromLocal('login'),
+			userId: '',
+			socket: null,
+			messages: {},
 			availableUsers: '',
+			availableChats: [],
 			usersToCreateChat: [_RequestController2.default.getFromLocal('login')],
 			displayCreateModal: false,
-			socket: null,
-			successCreatedChat: false
+			successCreatedChat: false,
+			activeChat: ''
 		}, _this.componentWillMount = function () {
 			var logged = _RequestController2.default.getFromLocal('logged');
 
@@ -25223,7 +25231,21 @@ var mainPage = function (_React$Component) {
 				history.go();
 			}
 
-			var login = _RequestController2.default.getFromLocal('login');
+			// get user id
+			fetch(_config.apiPrefix + '/' + _config.db.name, {
+				method: 'POST',
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					action: _actions2.default.GET_USER_ID,
+					data: _this.state.login
+				})
+			}).then(function (data) {
+				data.json().then(function (response) {
+					_this.setState({
+						userId: response[0]._id
+					});
+				});
+			});
 
 			// available chats
 			fetch(_config.apiPrefix + '/' + _config.chat_db, {
@@ -25231,12 +25253,38 @@ var mainPage = function (_React$Component) {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					action: _actions2.default.SHOW_CHATS,
-					data: login
+					data: _this.state.login
 				})
 			}).then(function (data) {
 				data.json().then(function (response) {
-					console.log(response);
+					_this.setState({
+						availableChats: response
+					});
 				});
+			});
+
+			// user messages
+			var messages = {};
+
+			fetch(_config.apiPrefix + '/' + _config.messages_db, {
+				method: 'POST',
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					action: _actions2.default.GET_MESSAGES,
+					data: _this.state.login
+				})
+			}).then(function (data) {
+				data.json().then(function (response) {
+					response.forEach(function (el, i) {
+						if (!messages[el.chatId]) messages[el.chatId] = [];
+
+						messages[el.chatId].push(el);
+					});
+				});
+			});
+
+			_this.setState({
+				messages: messages
 			});
 		}, _this.componentDidMount = function () {
 			// scrolling to the bottom of the chat history
@@ -25249,10 +25297,11 @@ var mainPage = function (_React$Component) {
 			    self = _this;
 
 			socket.on(_actions2.default.RECEIVE_MESSAGE, function (msg) {
-				console.log('mes: ' + msg);
+				var newMessages = self.state.messages[self.state.availableChats[self.state.activeChat]._id];
+				newMessages.unshift(msg);
 
 				self.setState({
-					messages: msg
+					messages: newMessages
 				});
 			});
 
@@ -25261,28 +25310,13 @@ var mainPage = function (_React$Component) {
 			});
 		}, _this.sendMessage = function () {
 			var message = document.getElementById('message_input').value;
-			_this.state.socket.emit(_actions2.default.SEND_MESSAGE, message);
-		}, _this.addToUserList = function (e) {
-			var user = e.target.innerHTML;
 
-			if (_this.state.usersToCreateChat.indexOf(user) === -1) {
-				var newUsers = _this.state.usersToCreateChat;
-				newUsers.push(user);
-
-				_this.setState({
-					usersToCreateChat: newUsers
-				});
-			}
-		}, _this.removeFromUserList = function (e) {
-			var user = e.target.innerHTML;
-
-			var newUsers = _this.state.usersToCreateChat;
-			newUsers = newUsers.filter(function (el) {
-				return el !== user;
-			});
-
-			_this.setState({
-				usersToCreateChat: newUsers
+			_this.state.socket.emit(_actions2.default.SEND_MESSAGE, {
+				chatId: _this.state.availableChats[_this.state.activeChat]._id,
+				senderId: _this.state.userId,
+				senderNickName: _this.state.login,
+				message: message,
+				date: new Date()
 			});
 		}, _this.createChat = function () {
 			fetch(_config.apiPrefix + '/' + _config.chat_db, {
@@ -25313,17 +25347,46 @@ var mainPage = function (_React$Component) {
 					});
 				});
 			});
+		}, _this.addToUserList = function (e) {
+			var user = e.target.innerHTML;
+
+			if (_this.state.usersToCreateChat.indexOf(user) === -1) {
+				var newUsers = _this.state.usersToCreateChat;
+				newUsers.push(user);
+
+				_this.setState({
+					usersToCreateChat: newUsers
+				});
+			}
+		}, _this.removeFromUserList = function (e) {
+			var user = e.target.innerHTML;
+
+			var newUsers = _this.state.usersToCreateChat;
+			newUsers = newUsers.filter(function (el) {
+				return el !== user;
+			});
+
+			_this.setState({
+				usersToCreateChat: newUsers
+			});
 		}, _this.closeModal = function () {
 			_this.setState({
 				successCreatedChat: false,
 				displayCreateModal: false,
 				usersToCreateChat: [_RequestController2.default.getFromLocal('login')]
 			});
+		}, _this.goToChat = function (index) {
+			_this.setState({
+				activeChat: index
+			});
 		}, _this.render = function () {
 			var currentUser = _RequestController2.default.getFromLocal('login'),
 			    availableUsers = void 0,
-			    usersToCreateChat = void 0;
+			    usersToCreateChat = void 0,
+			    availableChats = void 0,
+			    messages = '';
 
+			// available users for chat creating
 			if (_this.state.availableUsers !== '') {
 				availableUsers = _this.state.availableUsers.map(function (el, i) {
 					if (el.name !== currentUser) return _react2.default.createElement(
@@ -25333,6 +25396,7 @@ var mainPage = function (_React$Component) {
 					);
 				});
 
+				// chosen users
 				if (_this.state.usersToCreateChat.length > 1) {
 					usersToCreateChat = _this.state.usersToCreateChat.map(function (el, i) {
 						if (i !== 0) return _react2.default.createElement(
@@ -25342,6 +25406,54 @@ var mainPage = function (_React$Component) {
 						);
 					});
 				}
+			}
+
+			// displaying chats which are available for current user
+			if (_this.state.availableChats.length !== 0) {
+				availableChats = _this.state.availableChats.map(function (chat, i) {
+					var users = chat.availableUsers.filter(function (el) {
+						return el !== _this.state.login;
+					}).join(', ');
+
+					return _react2.default.createElement(
+						'li',
+						{ className: 'chat', key: i, onClick: function onClick() {
+								return _this.goToChat(i);
+							} },
+						_react2.default.createElement(
+							'p',
+							{ className: 'chat_title' },
+							users
+						),
+						_react2.default.createElement(
+							'p',
+							{ className: 'chat_preview' },
+							'Last message'
+						)
+					);
+				});
+			}
+
+			// outputing messages in chats
+			if (_this.state.activeChat !== '' && _this.state.messages[_this.state.availableChats[_this.state.activeChat]._id]) {
+				messages = _this.state.messages[_this.state.availableChats[_this.state.activeChat]._id].map(function (el, i) {
+					return _react2.default.createElement(
+						'li',
+						{ className: el.senderNickName === _this.state.login ? 'message_item fromLogged' : 'message_item', key: i },
+						_react2.default.createElement(
+							'p',
+							{ className: 'sender' },
+							el.senderNickName
+						),
+						_react2.default.createElement(
+							'p',
+							{ className: 'message' },
+							el.message
+						)
+					);
+				});
+
+				console.log(messages);
 			}
 
 			return _react2.default.createElement(
@@ -25410,216 +25522,7 @@ var mainPage = function (_React$Component) {
 					_react2.default.createElement(
 						'ul',
 						{ className: 'available_chats' },
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Very big last message from somebody'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'chat' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_title' },
-								'Nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'chat_preview' },
-								'Last message'
-							)
-						)
+						availableChats
 					)
 				),
 				_react2.default.createElement(
@@ -25631,170 +25534,19 @@ var mainPage = function (_React$Component) {
 						_react2.default.createElement(
 							'p',
 							{ className: 'chat_active_title' },
-							'Nickname or group'
+							_this.state.activeChat === '' ? 'Choose or create chat' : _this.state.availableChats[_this.state.activeChat].availableUsers.filter(function (el) {
+								return el !== _this.state.login;
+							}).join(', ')
 						)
 					),
 					_react2.default.createElement(
 						'ul',
 						{ className: 'messageWrap' },
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item fromLogged' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'My nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Well, it\'s fine'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item fromLogged' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'My nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Well, it\'s fine, but we can do better'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item fromLogged' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'My nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Well, it\'s fine'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item fromLogged' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'My nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						),
-						_react2.default.createElement(
-							'li',
-							{ className: 'message_item' },
-							_react2.default.createElement(
-								'p',
-								{ className: 'sender' },
-								'Some nickname'
-							),
-							_react2.default.createElement(
-								'p',
-								{ className: 'message' },
-								'Hello, this is some very sensful message. Lorem ipsum could be here, but not today :)'
-							)
-						)
+						messages
 					),
 					_react2.default.createElement(
 						'div',
-						{ className: 'message_input_wrap' },
+						{ className: 'message_input_wrap', style: { pointerEvents: _this.state.activeChat === '' ? 'none' : 'auto' } },
 						_react2.default.createElement('textarea', { id: 'message_input' }),
 						_react2.default.createElement('button', { id: 'send_message', onClick: _this.sendMessage })
 					)
@@ -25802,6 +25554,12 @@ var mainPage = function (_React$Component) {
 			);
 		}, _temp), _possibleConstructorReturn(_this, _ret);
 	}
+
+	// chat creating
+
+
+	// modal logic
+
 
 	return mainPage;
 }(_react2.default.Component);

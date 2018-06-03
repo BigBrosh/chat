@@ -34,6 +34,11 @@ app.get('/chats', (req, res) => {
 	.then(data => res.json(data));
 });
 
+app.get('/messages', (req, res) => {
+	db.showMessages()
+	.then(data => res.json(data));
+});
+
 app.post('/users', (req, res) => {
 	if (req.body.action === actions.REGISTER)
 	{
@@ -74,10 +79,15 @@ app.post('/users', (req, res) => {
 		db.findUserById(req.body.data)
 		.then(data => res.json(data));
 	}
+
+	else if (req.body.action === actions.GET_USER_ID)
+	{
+		db.findUser(req.body.data)
+		.then(data => res.json(data));
+	}
 });
 
 app.post('/chats', (req, res) => {
-
 	if (req.body.action === actions.CREATE_CHAT)
 	{
 		db.findUsers(req.body.data)
@@ -100,16 +110,34 @@ app.post('/chats', (req, res) => {
 	}
 });
 
+app.post('/messages', (req, res) => {
+	if (req.body.action === actions.GET_MESSAGES)
+	{
+		db.findUser(req.body.data)
+		.then(response => {
+			db.listUsersChats(response[0].name)
+			.then(response => {
+				response = response.map((el, i) => {
+					return el._id
+				});
+
+				db.showChatMessages(response)
+				.then(response => res.json(response));
+			});
+		});		
+	}
+});
+
 http.listen(serverPort, () => {
 	console.log(`Server is running on port ${serverPort}`);
 });
 
 // socket logic
-
 io.on('connection', function (socket) {
 	console.log('user connected!');	
 
-	socket.on(actions.SEND_MESSAGE, function(msg) {
-		io.emit(actions.RECEIVE_MESSAGE, msg);
+	socket.on(actions.SEND_MESSAGE, function(data) {
+		db.newMessage(data);
+		io.emit(actions.RECEIVE_MESSAGE, data);
 	});	
 });

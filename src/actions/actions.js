@@ -6,7 +6,10 @@ const actions = {
 	FIND_USERS: 'find_users',
 	CREATE_CHAT: 'create_chat',
 	SHOW_CHATS: 'show_chats',
-	FIND_USER_BY_ID: 'find_user_id'
+	FIND_USER_BY_ID: 'find_user_id',
+	CREATE_MESSAGE: 'create_message',
+	GET_USER_ID: 'get_user_id',
+	GET_MESSAGES: 'get_messages'
 }
 
 export default actions;
