@@ -114,8 +114,9 @@ class mainPage extends React.Component {
 			self = this;
 
 		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
-			let newMessages = self.state.messages[self.state.availableChats[self.state.activeChat]._id];
-			newMessages.unshift(msg);
+			let newMessages = self.state.messages;
+
+			newMessages[self.state.availableChats[self.state.activeChat]._id] ? newMessages[self.state.availableChats[self.state.activeChat]._id].push(msg) : newMessages[self.state.availableChats[self.state.activeChat]._id] = [msg];
 
 			self.setState({
 				messages: newMessages
@@ -267,9 +268,9 @@ class mainPage extends React.Component {
 				</li>
 				)
 			});
-		}
 
-		console.log(this.state.messages);
+			messages = messages.reverse();
+		}
 
 		return (
 			<div className="main_chat_wrap">

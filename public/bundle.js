@@ -25297,8 +25297,9 @@ var mainPage = function (_React$Component) {
 			    self = _this;
 
 			socket.on(_actions2.default.RECEIVE_MESSAGE, function (msg) {
-				var newMessages = self.state.messages[self.state.availableChats[self.state.activeChat]._id];
-				newMessages.unshift(msg);
+				var newMessages = self.state.messages;
+
+				newMessages[self.state.availableChats[self.state.activeChat]._id].push(msg);
 
 				self.setState({
 					messages: newMessages
@@ -25453,7 +25454,7 @@ var mainPage = function (_React$Component) {
 					);
 				});
 
-				console.log(messages);
+				messages = messages.reverse();
 			}
 
 			return _react2.default.createElement(
