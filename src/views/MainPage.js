@@ -17,10 +17,12 @@ class mainPage extends React.Component {
 	state = {
 		messages: '',
 		availableUsers: '',
+		availableChats: [],
 		usersToCreateChat: [RequestController.getFromLocal('login')],
 		displayCreateModal: false,
 		socket: null,
-		successCreatedChat: false
+		successCreatedChat: false,
+		login: RequestController.getFromLocal('login')
 	}
 
 	componentWillMount = () => {
@@ -33,21 +35,21 @@ class mainPage extends React.Component {
 			history.go();
 		}
 
-		let login = RequestController.getFromLocal('login');
-
 		// available chats
 		fetch( `${apiPrefix}/${chat_db}`, {
 			method: 'POST',
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				action: actions.SHOW_CHATS,
-				data: login
+				data: this.state.login
 			})
 		})
 		.then(data => {
 			data.json()
 			.then(response => {
-				console.log(response);
+				this.setState({
+					availableChats: response
+				})
 			});
 		});
 	}
@@ -153,7 +155,8 @@ class mainPage extends React.Component {
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
-			usersToCreateChat;
+			usersToCreateChat,
+			availableChats;
 
 		if (this.state.availableUsers !== '')
 		{
@@ -169,6 +172,20 @@ class mainPage extends React.Component {
 						return <li key={i} onClick={this.removeFromUserList}>{el}</li>
 				});
 			}
+		}
+
+		if (this.state.availableChats.length !== 0)
+		{
+			availableChats = this.state.availableChats.map((chat, i) => {
+				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', ');
+
+				return (
+				<li className="chat" key={i}>
+					<p className="chat_title">{ users }</p>
+					<p className="chat_preview">Last message</p>
+				</li>
+				)					
+			});
 		}
 
 		return (
@@ -211,80 +228,7 @@ class mainPage extends React.Component {
 					</div>
 
 					<ul className="available_chats">
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Very big last message from somebody</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
-
-						<li className="chat">
-							<p className="chat_title">Nickname</p>
-							<p className="chat_preview">Last message</p>
-						</li>
+						{ availableChats }					
 					</ul>
 				</div>
 

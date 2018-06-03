@@ -22,6 +22,10 @@ export function findUser(name) {
 	return User.find({ name: name });
 }
 
+export function findUserById(id) {
+	return User.find({ _id: id });
+}
+
 export function findUsers(names) {
 	return User.find({ name: {$in: names} });
 }
@@ -49,8 +53,8 @@ export function listChats() {
 	return Chat.find();
 }
 
-export function listUsersChats(id) {
-	return Chat.find({ availableUsers: id });
+export function listUsersChats(name) {
+	return Chat.find({ availableUsers: name });
 }
 
 export function createChat(ids) {

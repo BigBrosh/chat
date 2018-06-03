@@ -68,6 +68,12 @@ app.post('/users', (req, res) => {
 		});
 
 	}
+
+	else if (req.body.action === actions.FIND_USER_BY_ID)
+	{
+		db.findUserById(req.body.data)
+		.then(data => res.json(data));
+	}
 });
 
 app.post('/chats', (req, res) => {
@@ -77,7 +83,7 @@ app.post('/chats', (req, res) => {
 		db.findUsers(req.body.data)
 		.then(response => {
 			let ids = response.map(el => {
-				return el._id;
+				return el.name;
 			});
 
 			db.createChat(ids);
@@ -88,7 +94,7 @@ app.post('/chats', (req, res) => {
 	{
 		db.findUsers(req.body.data)
 		.then(response => {
-			db.listUsersChats(response[0]._id)
+			db.listUsersChats(response[0].name)
 			.then(response => res.json(response));
 		});
 	}
