@@ -139,5 +139,9 @@ io.on('connection', function (socket) {
 	socket.on(actions.SEND_MESSAGE, function(data) {
 		db.newMessage(data);
 		io.emit(actions.RECEIVE_MESSAGE, data);
+	});
+
+	socket.on(actions.CREATE_CHAT, function() {
+		io.emit(actions.UPDATE_CHATS);
 	});	
 });

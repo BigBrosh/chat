@@ -121,6 +121,10 @@ class mainPage extends React.Component {
 			});
 		});
 
+		socket.on(actions.UPDATE_CHATS, function(msg) {
+			self.updateChats();
+		});
+
 		this.setState({
 			socket: socket
 		});
@@ -170,7 +174,7 @@ class mainPage extends React.Component {
 			successCreatedChat: true
 		});
 
-		this.updateChats();
+		this.state.socket.emit(actions.CREATE_CHAT);
 	}
 
 	// modal logic
