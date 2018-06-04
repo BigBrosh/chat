@@ -50,23 +50,7 @@ class mainPage extends React.Component {
 			});
 		});
 
-		// available chats
-		fetch( `${apiPrefix}/${chat_db}`, {
-			method: 'POST',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				action: actions.SHOW_CHATS,
-				data: this.state.login
-			})
-		})
-		.then(data => {
-			data.json()
-			.then(response => {
-				this.setState({
-					availableChats: response
-				})
-			});
-		});
+		this.updateChats();
 
 		// user messages
 		let messages = {};
@@ -94,6 +78,25 @@ class mainPage extends React.Component {
 		this.setState({
 			messages: messages
 		});
+	}
+
+	updateChats = () => {
+		fetch( `${apiPrefix}/${chat_db}`, {
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: actions.SHOW_CHATS,
+				data: this.state.login
+			})
+		})
+		.then(data => {
+			data.json()
+			.then(response => {
+				this.setState({
+					availableChats: response
+				})
+			});
+		});		
 	}
 
 	componentDidMount = () => {
@@ -166,6 +169,8 @@ class mainPage extends React.Component {
 		this.setState({
 			successCreatedChat: true
 		});
+
+		this.updateChats();
 	}
 
 	// modal logic
