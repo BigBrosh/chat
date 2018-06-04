@@ -281,6 +281,8 @@ class mainPage extends React.Component {
 				</li>
 				)			
 			});
+
+			availableChats = availableChats.reverse();
 		}
 
 		// outputing messages in chats
