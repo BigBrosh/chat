@@ -20,7 +20,7 @@ class mainPage extends React.Component {
 		login: RequestController.getFromLocal('login'),
 		userId: '',
 		socket: null,
-		messages: {},
+		messages: '',
 		availableUsers: '',
 		availableChats: [],
 		usersToCreateChat: [RequestController.getFromLocal('login')],
@@ -72,11 +72,11 @@ class mainPage extends React.Component {
 
 					messages[el.chatId].push(el);					
 				});
-			});
-		});
 
-		this.setState({
-			messages: messages
+				this.setState({
+					messages: messages
+				});
+			});
 		});
 	}
 
@@ -267,14 +267,15 @@ class mainPage extends React.Component {
 		if (this.state.availableChats.length !== 0)
 		{
 			availableChats = this.state.availableChats.map((chat, i) => {
-				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', ');
+				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', '),
+					message = this.state.messages[chat._id] ? this.state.messages[chat._id][this.state.messages[chat._id].length - 1].message : 'no messages';
 
 				return (
 				<li className="chat" key={i} onClick={() => this.goToChat(i)}>
 					<p className="chat_title">{ users }</p>
-					<p className="chat_preview">Last message</p>
+					<p className="chat_preview">{ message }</p>
 				</li>
-				)					
+				)			
 			});
 		}
 
