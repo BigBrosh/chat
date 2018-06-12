@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Router, Route, Switch} from 'react-router-dom';
+import {Router, Route, Switch, Redirect} from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 import MainPage from './views/MainPage';
@@ -26,6 +26,7 @@ class Main extends React.Component {
 					<Route exact path="/registration" component={RegisterPage} />
 					<Route exact path="/login" component={LoginPage} />
 					<Route path="/404" component={ErrorPage} />
+					<Redirect to="/404"/>
 				</Switch>
 			</Router>
 		)
