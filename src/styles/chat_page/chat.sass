@@ -77,7 +77,8 @@ p.chat_active_title
 			min-width: 	110px
 			opacity: .3
 			top: 0px
-			left: 100%
+			left: calc(100% + 5px)
+			text-align: left
 		.sender
 			border-bottom: 1px solid $additional_color
 			color: $nickname_color
@@ -88,8 +89,9 @@ p.chat_active_title
 			margin-left: auto
 			text-align: left
 			.date
+				text-align: right
 				left: initial
-				right: 100%
+				right: calc(100% + 5px)
 
 // Message input
 .message_input_wrap

@@ -242,6 +242,8 @@ class mainPage extends React.Component {
 		this.checkUser();
 	}
 
+	checkDate = date => date > 9 ? date : '0' + date;
+
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
@@ -296,13 +298,18 @@ class mainPage extends React.Component {
 		if (this.state.activeChat !== '' && this.state.messages[this.state.availableChats[this.state.activeChat]._id])
 		{
 			messages = this.state.messages[this.state.availableChats[this.state.activeChat]._id].map((el, i) => {
-				let date = new Date(el.date);
+				let date = new Date(el.date),
+					year = date.getFullYear(),
+					month = this.checkDate(date.getMonth() + 1),
+					day = this.checkDate(date.getDate()),
+					hours = this.checkDate(date.getHours()),
+					minutes = this.checkDate(date.getMinutes());
 
 				return 	(
 				<li className={el.senderNickName === this.state.login ? 'message_item fromLogged' : 'message_item'} key={i} >
 					<p className="sender">{ el.senderNickName }</p>
 					<p className="message">{ el.message }</p>
-					<p className="date">{ `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}  ${date.getHours()}:${date.getMinutes()}` }</p>
+					<p className="date">{ `${year}-${month}-${day}\n${hours}:${minutes}`}</p>
 				</li>
 				)
 			});
