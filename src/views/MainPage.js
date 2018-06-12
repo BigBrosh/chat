@@ -273,7 +273,10 @@ class mainPage extends React.Component {
 			availableChats = this.state.availableChats.map((chat, i) => {
 				
 				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', '),
-					message = this.state.messages[chat._id] ? this.state.messages[chat._id][this.state.messages[chat._id].length - 1].message : 'no messages';
+					message = this.state.messages[chat._id]
+					? this.state.messages[chat._id][this.state.messages[chat._id].length - 1].message
+					: 'no messages yet',
+					messageStyle = message === 'no messages yet' ? { opacity: '.6' } : {};
 
 				if (this.state.messages[chat._id] && this.state.messages[chat._id][this.state.messages[chat._id].length - 1].senderId === this.state.userId)
 					message = `You: ${message}`;
@@ -281,7 +284,7 @@ class mainPage extends React.Component {
 				return (
 				<li className="chat" key={i} onClick={() => this.goToChat(i)}>
 					<p className="chat_title">{ users }</p>
-					<p className="chat_preview">{ message }</p>
+					<p className="chat_preview" style={ messageStyle }>{ message }</p>
 				</li>
 				)			
 			});

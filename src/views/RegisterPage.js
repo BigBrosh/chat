@@ -1,6 +1,7 @@
 import React from 'react';
-
 import { Link } from 'react-router-dom';
+
+import sha256 from 'js-sha256';
 
 import '../styles/main.sass';
 import '../styles/register_page/register.sass';
@@ -40,7 +41,7 @@ class RegisterPage extends React.Component {
 
 	addUser = () => {
 		let nickname = document.getElementById('nickname').value;
-		let password = document.getElementById('password').value;
+		let password = sha256(sha256(document.getElementById('password').value));
 
 		// if nickname is empty
 		if (nickname.length === 0 || nickname.replace(/\s/ig, '').length === 0)
