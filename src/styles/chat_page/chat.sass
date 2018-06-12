@@ -128,6 +128,7 @@ p.chat_active_title
 		li
 			padding-left: 16px
 			position: relative
+			cursor: pointer
 			&:before
 				position: absolute
 				content: ''
@@ -145,6 +146,10 @@ p.chat_active_title
 			li
 				&:before
 					background: rgba($main_color, .65)
+	.limited
+		max-height: 200px
+		overflow: auto
+
 	.create_button
 		font-size: 12px
 		padding: 5px 8px
