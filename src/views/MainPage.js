@@ -114,11 +114,16 @@ class mainPage extends React.Component {
 		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
 			let newMessages = self.state.messages;
 
+			console.log(self.state.messages);
+
+			newMessages[msg.chatId] ? console.log(1) : console.log(2);
+
 			newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
 
 			self.setState({
 				messages: newMessages
 			});
+
 		});
 
 		socket.on(actions.UPDATE_CHATS, function(msg) {
@@ -147,8 +152,10 @@ class mainPage extends React.Component {
 		let input = document.getElementById('message_input'),
 			message = input.value;
 
+		console.log(this.state.availableChats[this.state.activeChat].id);
+
 		this.state.socket.emit(actions.SEND_MESSAGE, {
-			chatId: this.state.availableChats[this.state.activeChat]._id,
+			chatId: this.state.availableChats[this.state.activeChat].id,
 			senderId: this.state.userId,
 			senderNickName: this.state.login,
 			message: message,
@@ -275,15 +282,14 @@ class mainPage extends React.Component {
 		// displaying chats which are available for current user
 		if (this.state.availableChats.length !== 0)
 		{
-			availableChats = this.state.availableChats.map((chat, i) => {
-				
+			availableChats = this.state.availableChats.map((chat, i) => {				
 				let users = chat.availableUsers.filter(el => el !== this.state.login).join(', '),
-					message = this.state.messages[chat._id]
-					? this.state.messages[chat._id][this.state.messages[chat._id].length - 1].message
+					message = this.state.messages[chat.id]
+					? this.state.messages[chat.id][this.state.messages[chat.id].length - 1].message
 					: 'no messages yet',
 					messageStyle = message === 'no messages yet' ? { opacity: '.6' } : {};
 
-				if (this.state.messages[chat._id] && this.state.messages[chat._id][this.state.messages[chat._id].length - 1].senderId === this.state.userId)
+				if (this.state.messages[chat.id] && this.state.messages[chat.id][this.state.messages[chat.id].length - 1].senderId === this.state.userId)
 					message = `You: ${message}`;
 
 				return (
@@ -298,9 +304,9 @@ class mainPage extends React.Component {
 		}
 
 		// outputing messages in chats
-		if (this.state.activeChat !== '' && this.state.messages[this.state.availableChats[this.state.activeChat]._id])
+		if (this.state.activeChat !== '' && this.state.messages[this.state.availableChats[this.state.activeChat].id])
 		{
-			messages = this.state.messages[this.state.availableChats[this.state.activeChat]._id].map((el, i) => {
+			messages = this.state.messages[this.state.availableChats[this.state.activeChat].id].map((el, i) => {
 				let date = new Date(el.date),
 					year = date.getFullYear(),
 					month = this.checkDate(date.getMonth() + 1),

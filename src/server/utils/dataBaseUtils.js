@@ -57,14 +57,15 @@ export function listChats() {
 	return Chat.find();
 }
 
-export function listUsersChats(name) {
-	return Chat.find({ availableUsers: name });
+export function listUsersChats(id) {
+	return Chat.find({ availableUsersIds: id });
 }
 
-export function createChat(users, id) {
+export function createChat(data) {
 	let chat = new Chat({
-		id: id,
-		availableUsers: users
+		id: data.chatId,
+		availableUsers: data.names,
+		availableUsersIds: data.ids
 	});
 
 	chat.save();

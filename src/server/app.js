@@ -100,10 +100,18 @@ app.post('/chats', (req, res) => {
 		db.findUsers(req.body.data.users)
 		.then(response => {
 			let ids = response.map(el => {
+				return el._id;
+			}),
+				names = response.map(el => {
 				return el.name;
 			});
 
-			db.createChat(ids, req.body.data.id);
+			db.createChat({
+				ids: ids,
+				names: names,
+				chatId: req.body.data.id
+			});
+
 			db.createMessagesUpdates(ids, req.body.data.id);
 		});		
 	}
@@ -112,7 +120,7 @@ app.post('/chats', (req, res) => {
 	{
 		db.findUsers(req.body.data)
 		.then(response => {
-			db.listUsersChats(response[0].name)
+			db.listUsersChats(response[0]._id)
 			.then(response => res.json(response));
 		});
 	}
@@ -123,10 +131,10 @@ app.post('/messages', (req, res) => {
 	{
 		db.findUser(req.body.data)
 		.then(response => {
-			db.listUsersChats(response[0].name)
+			db.listUsersChats(response[0]._id)
 			.then(response => {
 				response = response.map((el, i) => {
-					return el._id
+					return el.id
 				});
 
 				db.showChatMessages(response)

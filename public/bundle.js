@@ -2384,8 +2384,7 @@ var actions = {
 	CREATE_MESSAGE: 'create_message',
 	GET_USER_ID: 'get_user_id',
 	GET_MESSAGES: 'get_messages',
-	UPDATE_CHATS: 'update_chats',
-	CREATE_UPDATES_STORE: 'create_updates_store'
+	UPDATE_CHATS: 'update_chats'
 };
 
 exports.default = actions;
@@ -25828,6 +25827,10 @@ var mainPage = function (_React$Component) {
 			socket.on(_actions2.default.RECEIVE_MESSAGE, function (msg) {
 				var newMessages = self.state.messages;
 
+				console.log(self.state.messages);
+
+				newMessages[msg.chatId] ? console.log(1) : console.log(2);
+
 				newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
 
 				self.setState({
@@ -25853,8 +25856,10 @@ var mainPage = function (_React$Component) {
 			var input = document.getElementById('message_input'),
 			    message = input.value;
 
+			console.log(_this.state.availableChats[_this.state.activeChat].id);
+
 			_this.state.socket.emit(_actions2.default.SEND_MESSAGE, {
-				chatId: _this.state.availableChats[_this.state.activeChat]._id,
+				chatId: _this.state.availableChats[_this.state.activeChat].id,
 				senderId: _this.state.userId,
 				senderNickName: _this.state.login,
 				message: message,
@@ -25868,7 +25873,10 @@ var mainPage = function (_React$Component) {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					action: _actions2.default.CREATE_CHAT,
-					data: _this.state.usersToCreateChat
+					data: {
+						id: '' + +new Date() + _this.state.userId,
+						users: _this.state.usersToCreateChat
+					}
 				})
 			});
 
@@ -25962,14 +25970,13 @@ var mainPage = function (_React$Component) {
 			// displaying chats which are available for current user
 			if (_this.state.availableChats.length !== 0) {
 				availableChats = _this.state.availableChats.map(function (chat, i) {
-
 					var users = chat.availableUsers.filter(function (el) {
 						return el !== _this.state.login;
 					}).join(', '),
-					    message = _this.state.messages[chat._id] ? _this.state.messages[chat._id][_this.state.messages[chat._id].length - 1].message : 'no messages yet',
+					    message = _this.state.messages[chat.id] ? _this.state.messages[chat.id][_this.state.messages[chat.id].length - 1].message : 'no messages yet',
 					    messageStyle = message === 'no messages yet' ? { opacity: '.6' } : {};
 
-					if (_this.state.messages[chat._id] && _this.state.messages[chat._id][_this.state.messages[chat._id].length - 1].senderId === _this.state.userId) message = 'You: ' + message;
+					if (_this.state.messages[chat.id] && _this.state.messages[chat.id][_this.state.messages[chat.id].length - 1].senderId === _this.state.userId) message = 'You: ' + message;
 
 					return _react2.default.createElement(
 						'li',
@@ -25993,8 +26000,8 @@ var mainPage = function (_React$Component) {
 			}
 
 			// outputing messages in chats
-			if (_this.state.activeChat !== '' && _this.state.messages[_this.state.availableChats[_this.state.activeChat]._id]) {
-				messages = _this.state.messages[_this.state.availableChats[_this.state.activeChat]._id].map(function (el, i) {
+			if (_this.state.activeChat !== '' && _this.state.messages[_this.state.availableChats[_this.state.activeChat].id]) {
+				messages = _this.state.messages[_this.state.availableChats[_this.state.activeChat].id].map(function (el, i) {
 					var date = new Date(el.date),
 					    year = date.getFullYear(),
 					    month = _this.checkDate(date.getMonth() + 1),
