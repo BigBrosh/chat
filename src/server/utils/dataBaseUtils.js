@@ -90,6 +90,17 @@ export function newMessage(data) {
 		date: data.date
 	});
 
+	MessagesUpdates.update(
+		{ 
+			"chatId": data.chatId,
+			"isOnline": false
+		},
+		{ $inc: { "newMessages" : 1 } },
+		{
+			multi: true
+		}
+	);
+
 	newMessage.save();
 }
 
