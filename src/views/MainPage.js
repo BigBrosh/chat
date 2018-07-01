@@ -114,10 +114,6 @@ class mainPage extends React.Component {
 		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
 			let newMessages = self.state.messages;
 
-			console.log(self.state.messages);
-
-			newMessages[msg.chatId] ? console.log(1) : console.log(2);
-
 			newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
 
 			self.setState({
