@@ -166,7 +166,10 @@ class mainPage extends React.Component {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				action: actions.CREATE_CHAT,
-				data: this.state.usersToCreateChat
+				data: {
+					id: `${+new Date()}${this.state.userId}`,
+					users: this.state.usersToCreateChat
+				}
 			})
 		});
 

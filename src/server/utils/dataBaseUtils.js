@@ -3,14 +3,16 @@ import mongoose from 'mongoose';
 import '../databaseComponents/userModel';
 import '../databaseComponents/chatsModel';
 import '../databaseComponents/messagesModel';
+import '../databaseComponents/MessagesUpdatesModel';
+
 import config from '../../configs/config.json';
 
 const User = mongoose.model('users');
 const Chat = mongoose.model('chats');
 const Messages = mongoose.model('messages');
+const MessagesUpdates = mongoose.model('messagesUpdates');
 
 // user model's methods
-
 export function setUpConnection() {
 	mongoose.Promise = global.Promise;
 	mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`);
@@ -49,6 +51,7 @@ export function clearUserDB() {
 	User.collection.remove();
 }
 
+
 // chat model's methods
 export function listChats() {
 	return Chat.find();
@@ -58,17 +61,19 @@ export function listUsersChats(name) {
 	return Chat.find({ availableUsers: name });
 }
 
-export function createChat(ids) {
+export function createChat(users, id) {
 	let chat = new Chat({
-		availableUsers: ids
+		id: id,
+		availableUsers: users
 	});
 
-	return chat.save();
+	chat.save();
 }
 
 export function clearChatsDB() {
 	Chat.collection.remove();
 }
+
 
 // messages model's methods
 export function showMessages() {
@@ -93,4 +98,28 @@ export function showChatMessages(ids) {
 
 export function clearMessagesDB() {
 	Messages.collection.remove();
+}
+
+
+// messages updates model's methods
+export function showMessagesUpdates() {
+	return MessagesUpdates.find();
+}
+
+export function createMessagesUpdates(users, id) {
+	users.forEach(el => {
+		let newMessageUpdates = new MessagesUpdates ({
+			chatId: id,
+			userId: el,
+			lastSeen: new Date(),
+			isOnline: false,
+			newMessages: 0
+		});
+
+		newMessageUpdates.save();
+	});
+}
+
+export function clearMessagesUpdatesDB() {
+	MessagesUpdates.collection.remove();
 }

@@ -19,10 +19,12 @@ app.use(function(req, res, next) {
 	next();
 });
 
+// db.clearChatsDB();
+// db.clearMessagesUpdatesDB();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({ origin: '*' }));
-
 
 app.get('/users', (req, res) => {
 	db.listUsers()
@@ -36,6 +38,11 @@ app.get('/chats', (req, res) => {
 
 app.get('/messages', (req, res) => {
 	db.showMessages()
+	.then(data => res.json(data));
+});
+
+app.get('/messagesUpdates', (req, res) => {
+	db.showMessagesUpdates()
 	.then(data => res.json(data));
 });
 
@@ -90,13 +97,14 @@ app.post('/users', (req, res) => {
 app.post('/chats', (req, res) => {
 	if (req.body.action === actions.CREATE_CHAT)
 	{
-		db.findUsers(req.body.data)
+		db.findUsers(req.body.data.users)
 		.then(response => {
 			let ids = response.map(el => {
 				return el.name;
 			});
 
-			db.createChat(ids);
+			db.createChat(ids, req.body.data.id);
+			db.createMessagesUpdates(ids, req.body.data.id);
 		});		
 	}
 
@@ -143,5 +151,5 @@ io.on('connection', function (socket) {
 
 	socket.on(actions.CREATE_CHAT, function() {
 		io.emit(actions.UPDATE_CHATS);
-	});	
+	});
 });
