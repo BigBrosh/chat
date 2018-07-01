@@ -98,6 +98,9 @@ export function newMessage(data) {
 		{ $inc: { "newMessages" : 1 } },
 		{
 			multi: true
+		},
+		function (err) {
+			if (err) return handleError(err);
 		}
 	);
 
