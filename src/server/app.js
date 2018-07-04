@@ -144,6 +144,14 @@ app.post('/messages', (req, res) => {
 	}
 });
 
+app.post('/messagesUpdates', (req, res) => {
+	if (req.body.action === actions.GET_MESSAGES_UPDATES)
+	{
+		db.showUserMessagesUpdates(req.body.data)
+		.then(response => res.json(response));		
+	}
+});
+
 http.listen(serverPort, () => {
 	console.log(`Server is running on port ${serverPort}`);
 });

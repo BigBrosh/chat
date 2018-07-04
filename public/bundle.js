@@ -2331,7 +2331,7 @@ function updateLink (link, options, obj) {
 /* 25 */
 /***/ (function(module, exports) {
 
-module.exports = {"apiPrefix":"http://localhost:8080","serverPort":"8080","db":{"name":"users","host":"localhost","port":27017},"chat_db":"chats","messages_db":"messages"}
+module.exports = {"apiPrefix":"http://localhost:8080","serverPort":"8080","db":{"name":"users","host":"localhost","port":27017},"chat_db":"chats","messagesUpdates_db":"messagesUpdates","messages_db":"messages"}
 
 /***/ }),
 /* 26 */
@@ -2384,7 +2384,8 @@ var actions = {
 	CREATE_MESSAGE: 'create_message',
 	GET_USER_ID: 'get_user_id',
 	GET_MESSAGES: 'get_messages',
-	UPDATE_CHATS: 'update_chats'
+	UPDATE_CHATS: 'update_chats',
+	GET_MESSAGES_UPDATES: 'get_messages_updates'
 };
 
 exports.default = actions;
@@ -25799,37 +25800,21 @@ var mainPage = function (_React$Component) {
 					});
 				});
 			});
-		}, _this.updateChats = function () {
-			fetch(_config.apiPrefix + '/' + _config.chat_db, {
-				method: 'POST',
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					action: _actions2.default.SHOW_CHATS,
-					data: _this.state.login
-				})
-			}).then(function (data) {
-				data.json().then(function (response) {
-					_this.setState({
-						availableChats: response
-					});
-				});
-			});
 		}, _this.componentDidMount = function () {
 			// scrolling to the bottom of the chat history
 			var messageWrap = document.querySelector('.messageWrap');
 			messageWrap.scroll(0, messageWrap.scrollHeight);
 
 			_this.initSocket();
+			_this.updatesMesssagesUpdates();
+		}, _this.componentDidUpdate = function (prevProps, prevState) {
+			if (prevState.messages === '' && _this.state.messages !== '') _this.updatesMesssagesUpdates();
 		}, _this.initSocket = function () {
 			var socket = (0, _socket2.default)('http://' + _config2.default.db.host + ':' + _config2.default.serverPort),
 			    self = _this;
 
 			socket.on(_actions2.default.RECEIVE_MESSAGE, function (msg) {
 				var newMessages = self.state.messages;
-
-				console.log(self.state.messages);
-
-				newMessages[msg.chatId] ? console.log(1) : console.log(2);
 
 				newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
 
@@ -25844,6 +25829,21 @@ var mainPage = function (_React$Component) {
 
 			_this.setState({
 				socket: socket
+			});
+		}, _this.updateChats = function () {
+			fetch(_config.apiPrefix + '/' + _config.chat_db, {
+				method: 'POST',
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					action: _actions2.default.SHOW_CHATS,
+					data: _this.state.login
+				})
+			}).then(function (data) {
+				data.json().then(function (response) {
+					_this.setState({
+						availableChats: response
+					});
+				});
 			});
 		}, _this.checkUser = function () {
 			var logged = _RequestController2.default.getFromLocal('logged');
@@ -25938,6 +25938,30 @@ var mainPage = function (_React$Component) {
 			_this.checkUser();
 		}, _this.checkDate = function (date) {
 			return date > 9 ? date : '0' + date;
+		}, _this.updatesMesssagesUpdates = function () {
+			_this.state.availableChats.forEach(function (el, i) {
+				fetch(_config.apiPrefix + '/' + _config.messagesUpdates_db, {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						action: _actions2.default.GET_MESSAGES_UPDATES,
+						data: {
+							chatId: el.id,
+							userId: _this.state.userId
+						}
+					})
+				}).then(function (data) {
+					data.json().then(function (response) {
+						var newChatsData = _this.state.availableChats;
+
+						newChatsData[i]["messagesUpdates"] = response[0]["newMessages"];
+
+						_this.setState({
+							availableChats: newChatsData
+						});
+					});
+				});
+			});
 		}, _this.render = function () {
 			var currentUser = _RequestController2.default.getFromLocal('login'),
 			    availableUsers = void 0,
@@ -25986,7 +26010,12 @@ var mainPage = function (_React$Component) {
 						_react2.default.createElement(
 							'p',
 							{ className: 'chat_title' },
-							users
+							users,
+							_react2.default.createElement(
+								'span',
+								{ className: 'messages_updates' },
+								chat.messagesUpdates || ''
+							)
 						),
 						_react2.default.createElement(
 							'p',
@@ -26211,7 +26240,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\nh2 {\n  margin: 10px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n\n.logout {\n  padding: 0px;\n  border: none;\n  opacity: .65;\n  transition: .25; }\n  .logout:hover {\n    background: none;\n    transition: .25;\n    opacity: .9; }\n  .logout img {\n    width: 26px; }\n\n.main_chat_wrap {\n  height: calc(100vh - 20px);\n  margin: 10px 0px;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.top_line {\n  min-height: 55px;\n  display: flex;\n  align-items: center;\n  padding: 10px; }\n\n.aside > *, .chat_wrap > * {\n  padding: 10px; }\n\n.chat_wrap {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column; }\n\n.aside {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5;\n  overflow: hidden; }\n  .aside .top_line {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n  .aside .available_chats {\n    overflow-y: auto;\n    flex-grow: 1; }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5; }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n\np.chat_active_title {\n  font-size: 22px; }\n\n.messageWrap {\n  display: flex;\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  overflow-y: auto; }\n  .messageWrap .message_item {\n    position: relative;\n    max-width: 65%;\n    min-width: 65px;\n    margin-bottom: 15px;\n    text-align: right;\n    margin-right: auto;\n    border: 1px solid #43bd5f;\n    border-radius: 6px; }\n    .messageWrap .message_item .date {\n      position: absolute;\n      min-width: 110px;\n      opacity: .3;\n      top: 0px;\n      left: calc(100% + 5px);\n      text-align: left; }\n    .messageWrap .message_item .sender {\n      border-bottom: 1px solid #62cfa5;\n      color: #1e8cd4; }\n    .messageWrap .message_item > * {\n      padding: 4px 8px; }\n    .messageWrap .message_item.fromLogged {\n      margin-right: initial;\n      margin-left: auto;\n      text-align: left; }\n      .messageWrap .message_item.fromLogged .date {\n        text-align: right;\n        left: initial;\n        right: calc(100% + 5px); }\n\n.message_input_wrap {\n  margin-top: 20px;\n  position: relative; }\n  .message_input_wrap textarea {\n    height: 70px;\n    padding: 10px;\n    padding-right: 46px;\n    width: 100%;\n    resize: none;\n    outline: none;\n    border: 1px solid #62cfa5;\n    transition: .2s; }\n    .message_input_wrap textarea:focus {\n      transition: .2s;\n      border-color: #43bd5f; }\n  .message_input_wrap #send_message {\n    padding: 10px;\n    position: absolute;\n    right: 30px;\n    bottom: 50%;\n    transform: translateY(50%);\n    border: none;\n    background: url(" + escape(__webpack_require__(83)) + ") no-repeat center;\n    background-size: contain;\n    opacity: .5;\n    transition: .2s; }\n    .message_input_wrap #send_message:hover {\n      opacity: .75;\n      transition: .2s; }\n\n#createChat .users_list li {\n  padding-left: 16px;\n  position: relative;\n  cursor: pointer; }\n  #createChat .users_list li:before {\n    position: absolute;\n    content: '';\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    left: 4px;\n    top: 50%;\n    transform: translateY(-40%); }\n\n#createChat .users_list.available_users li:before {\n  background: #43bd5f; }\n\n#createChat .users_list.users_to_create_chat li:before {\n  background: rgba(67, 189, 95, 0.65); }\n\n#createChat .limited {\n  max-height: 200px;\n  overflow: auto; }\n\n#createChat .create_button {\n  font-size: 12px;\n  padding: 5px 8px;\n  margin: 5px 0px 0px auto;\n  display: block; }\n", ""]);
+exports.push([module.i, "* {\n  box-sizing: border-box;\n  font-family: sans-serif;\n  margin: 0px;\n  font-size: 14px; }\n\nbody {\n  margin: 0px; }\n\nh2 {\n  margin: 10px; }\n\n.title {\n  font-size: 18px;\n  text-align: center;\n  margin-bottom: 10px;\n  position: relative; }\n  .title.stylized_title {\n    margin-bottom: 20px; }\n    .title.stylized_title::before {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      background: #43bd5f;\n      bottom: -10px;\n      left: 0px; }\n  .title .close_button {\n    position: absolute;\n    content: '';\n    width: 14px;\n    height: 14px;\n    right: 0px;\n    top: 50%;\n    transform: translateY(-35%);\n    cursor: pointer; }\n    .title .close_button:before, .title .close_button:after {\n      position: absolute;\n      content: '';\n      width: 100%;\n      height: 1px;\n      left: 50%;\n      top: 50%;\n      transform: translate(-50%, -50%) rotate(-45deg);\n      background: #e11515; }\n    .title .close_button:after {\n      transform: translate(-50%, -50%) rotate(45deg); }\n\nbutton {\n  padding: 6px 10px;\n  cursor: pointer;\n  border: 1px solid #43bd5f;\n  border-radius: 4px;\n  background: none;\n  outline: none;\n  color: #43bd5f;\n  transition: .25s; }\n  button:hover {\n    transition: .25s;\n    color: #fff;\n    background: #43bd5f; }\n\ninput {\n  outline: none;\n  border-radius: 4px;\n  padding: 6px;\n  border: 1px solid rgba(98, 207, 165, 0.6); }\n  input:focus {\n    border-color: #62cfa5; }\n\na {\n  color: #22a0dc; }\n\nul {\n  padding: 0px; }\n\nli {\n  list-style-type: none; }\n\n::-webkit-scrollbar {\n  width: 3px; }\n\n::-webkit-scrollbar-track {\n  background: #f1f1f1; }\n\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.18); }\n\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.3); }\n\n.modal {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  right: 0px;\n  bottom: 0px;\n  background: rgba(0, 0, 0, 0.25);\n  z-index: 101; }\n  .modal .inner_wrap {\n    position: absolute;\n    padding: 10px;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: calc(100% - 20px);\n    max-width: 400px;\n    background: #fff; }\n\n.success_message {\n  color: #38e115;\n  text-align: center;\n  font-weight: 600;\n  font-size: 18px; }\n\n.logout {\n  padding: 0px;\n  border: none;\n  opacity: .65;\n  transition: .25; }\n  .logout:hover {\n    background: none;\n    transition: .25;\n    opacity: .9; }\n  .logout img {\n    width: 26px; }\n\n.main_chat_wrap {\n  height: calc(100vh - 20px);\n  margin: 10px 0px;\n  box-sizing: border-box;\n  display: flex;\n  font-family: sans-serif;\n  border: 1px solid #43bd5f; }\n  .main_chat_wrap > * {\n    padding: 10px; }\n\n.top_line {\n  min-height: 55px;\n  display: flex;\n  align-items: center;\n  padding: 10px; }\n\n.aside > *, .chat_wrap > * {\n  padding: 10px; }\n\n.chat_wrap {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column; }\n\n.aside {\n  display: flex;\n  flex-direction: column;\n  width: 300px;\n  height: 100%;\n  border-right: 1px solid #62cfa5;\n  overflow: hidden; }\n  .aside .top_line {\n    display: flex;\n    justify-content: space-between;\n    align-items: center; }\n  .aside .available_chats {\n    overflow-y: auto;\n    flex-grow: 1; }\n  .aside .chat {\n    border: 1px solid #43bd5f;\n    margin-bottom: 10px;\n    cursor: pointer; }\n    .aside .chat .chat_title {\n      border-bottom: 1px solid #62cfa5;\n      padding-right: 40px;\n      position: relative; }\n      .aside .chat .chat_title .messages_updates {\n        position: absolute;\n        top: 50%;\n        right: 10px;\n        font-weight: bold;\n        color: #bf52fc;\n        transform: translateY(-50%); }\n    .aside .chat > * {\n      padding: 5px;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      overflow: hidden; }\n\np.chat_active_title {\n  font-size: 22px; }\n\n.messageWrap {\n  display: flex;\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  overflow-y: auto; }\n  .messageWrap .message_item {\n    position: relative;\n    max-width: 65%;\n    min-width: 65px;\n    margin-bottom: 15px;\n    text-align: right;\n    margin-right: auto;\n    border: 1px solid #43bd5f;\n    border-radius: 6px; }\n    .messageWrap .message_item .date {\n      position: absolute;\n      min-width: 110px;\n      opacity: .3;\n      top: 0px;\n      left: calc(100% + 5px);\n      text-align: left; }\n    .messageWrap .message_item .sender {\n      border-bottom: 1px solid #62cfa5;\n      color: #1e8cd4; }\n    .messageWrap .message_item > * {\n      padding: 4px 8px; }\n    .messageWrap .message_item.fromLogged {\n      margin-right: initial;\n      margin-left: auto;\n      text-align: left; }\n      .messageWrap .message_item.fromLogged .date {\n        text-align: right;\n        left: initial;\n        right: calc(100% + 5px); }\n\n.message_input_wrap {\n  margin-top: 20px;\n  position: relative; }\n  .message_input_wrap textarea {\n    height: 70px;\n    padding: 10px;\n    padding-right: 46px;\n    width: 100%;\n    resize: none;\n    outline: none;\n    border: 1px solid #62cfa5;\n    transition: .2s; }\n    .message_input_wrap textarea:focus {\n      transition: .2s;\n      border-color: #43bd5f; }\n  .message_input_wrap #send_message {\n    padding: 10px;\n    position: absolute;\n    right: 30px;\n    bottom: 50%;\n    transform: translateY(50%);\n    border: none;\n    background: url(" + escape(__webpack_require__(83)) + ") no-repeat center;\n    background-size: contain;\n    opacity: .5;\n    transition: .2s; }\n    .message_input_wrap #send_message:hover {\n      opacity: .75;\n      transition: .2s; }\n\n#createChat .users_list li {\n  padding-left: 16px;\n  position: relative;\n  cursor: pointer; }\n  #createChat .users_list li:before {\n    position: absolute;\n    content: '';\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    left: 4px;\n    top: 50%;\n    transform: translateY(-40%); }\n\n#createChat .users_list.available_users li:before {\n  background: #43bd5f; }\n\n#createChat .users_list.users_to_create_chat li:before {\n  background: rgba(67, 189, 95, 0.65); }\n\n#createChat .limited {\n  max-height: 200px;\n  overflow: auto; }\n\n#createChat .create_button {\n  font-size: 12px;\n  padding: 5px 8px;\n  margin: 5px 0px 0px auto;\n  display: block; }\n", ""]);
 
 // exports
 

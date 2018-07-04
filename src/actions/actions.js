@@ -10,7 +10,8 @@ const actions = {
 	CREATE_MESSAGE: 'create_message',
 	GET_USER_ID: 'get_user_id',
 	GET_MESSAGES: 'get_messages',
-	UPDATE_CHATS: 'update_chats'
+	UPDATE_CHATS: 'update_chats',
+	GET_MESSAGES_UPDATES: 'get_messages_updates'
 }
 
 export default actions;

@@ -10,7 +10,7 @@ import io from 'socket.io-client/dist/socket.io';
 
 import RequestController from '../controllers/RequestController';
 import actions from '../actions/actions';
-import { apiPrefix, db, chat_db, messages_db } from '../configs/config.json';
+import { apiPrefix, db, chat_db, messages_db, messagesUpdates_db } from '../configs/config.json';
 
 import createBrowserHistory from 'history/createBrowserHistory';
 const history = createBrowserHistory();
@@ -26,7 +26,8 @@ class mainPage extends React.Component {
 		usersToCreateChat: [RequestController.getFromLocal('login')],
 		displayCreateModal: false,
 		successCreatedChat: false,
-		activeChat: ''
+		activeChat: '',
+		messagesUpdates: {}
 	}
 
 	componentWillMount = () => {
@@ -80,6 +81,45 @@ class mainPage extends React.Component {
 		});
 	}
 
+	componentDidMount = () => {
+		// scrolling to the bottom of the chat history
+		let messageWrap = document.querySelector('.messageWrap');
+		messageWrap.scroll(0, messageWrap.scrollHeight );
+
+		this.initSocket();
+		this.updateMessagesUpdates();
+	}
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (prevState.messages === '' && this.state.messages !== '')
+			this.updateMessagesUpdates();
+	}
+
+	initSocket = () => {
+		let socket = io(`http://${config.db.host}:${config.serverPort}`),
+			self = this;
+
+		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
+			let newMessages = self.state.messages;
+
+			newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
+
+			self.setState({
+				messages: newMessages
+			});
+
+			self.updateMessagesUpdates();
+		});
+
+		socket.on(actions.UPDATE_CHATS, function(msg) {
+			self.updateChats();
+		});
+
+		this.setState({
+			socket: socket
+		});
+	}
+
 	updateChats = () => {
 		fetch( `${apiPrefix}/${chat_db}`, {
 			method: 'POST',
@@ -99,38 +139,6 @@ class mainPage extends React.Component {
 		});		
 	}
 
-	componentDidMount = () => {
-		// scrolling to the bottom of the chat history
-		let messageWrap = document.querySelector('.messageWrap');
-		messageWrap.scroll(0, messageWrap.scrollHeight );
-
-		this.initSocket();
-	}
-
-	initSocket = () => {
-		let socket = io(`http://${config.db.host}:${config.serverPort}`),
-			self = this;
-
-		socket.on(actions.RECEIVE_MESSAGE, function(msg) {
-			let newMessages = self.state.messages;
-
-			newMessages[msg.chatId] ? newMessages[msg.chatId].push(msg) : newMessages[msg.chatId] = [msg];
-
-			self.setState({
-				messages: newMessages
-			});
-
-		});
-
-		socket.on(actions.UPDATE_CHATS, function(msg) {
-			self.updateChats();
-		});
-
-		this.setState({
-			socket: socket
-		});
-	}
-
 	// check user
 	checkUser = () => {
 		let logged = RequestController.getFromLocal('logged');
@@ -147,8 +155,6 @@ class mainPage extends React.Component {
 	sendMessage = () => {
 		let input = document.getElementById('message_input'),
 			message = input.value;
-
-		console.log(this.state.availableChats[this.state.activeChat].id);
 
 		this.state.socket.emit(actions.SEND_MESSAGE, {
 			chatId: this.state.availableChats[this.state.activeChat].id,
@@ -250,6 +256,35 @@ class mainPage extends React.Component {
 
 	checkDate = date => date > 9 ? date : '0' + date;
 
+	updateMessagesUpdates = () => {
+		this.state.availableChats.forEach((el, i) => {
+			fetch( `${apiPrefix}/${messagesUpdates_db}`, {
+				method: 'POST',
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					action: actions.GET_MESSAGES_UPDATES,
+					data: {
+						chatId: el.id,
+						userId: this.state.userId
+					}
+				})
+			})
+
+			.then(data => {
+				data.json()
+				.then(response => {
+					let newChatsData = this.state.messagesUpdates;
+
+					newChatsData[i] = response[0]["newMessages"];
+
+					this.setState({
+						messagesUpdates: newChatsData
+					})
+				});
+			});
+		});
+	}
+
 	render = () => {
 		let currentUser = RequestController.getFromLocal('login'),
 			availableUsers,
@@ -290,7 +325,7 @@ class mainPage extends React.Component {
 
 				return (
 				<li className="chat" key={i} onClick={() => this.goToChat(i)}>
-					<p className="chat_title">{ users }</p>
+					<p className="chat_title">{ users }<span className='messages_updates'>{this.state.messagesUpdates[i] || ''}</span></p>
 					<p className="chat_preview" style={ messageStyle }>{ message }</p>
 				</li>
 				)			

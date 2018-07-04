@@ -7,5 +7,6 @@
 		"port": 27017
 	},
 	"chat_db": "chats",
+	"messagesUpdates_db": "messagesUpdates",
 	"messages_db": "messages"
 }

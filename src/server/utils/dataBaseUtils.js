@@ -135,6 +135,13 @@ export function createMessagesUpdates(users, id) {
 	});
 }
 
+export function showUserMessagesUpdates(data) {
+	return MessagesUpdates.find({
+		chatId: data.chatId,
+		userId: data.userId
+	});
+}
+
 export function clearMessagesUpdatesDB() {
 	MessagesUpdates.collection.remove();
 }
